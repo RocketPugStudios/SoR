@@ -36,8 +36,6 @@ public class NPC_Behavior_LightSoldier : MonoBehaviour
     }
     private void setNextDestination()
     {
-        
-        
         distance = Vector3.Distance(agent.transform.position, PatrolNodes[patrolNodeElement].transform.localPosition);
         if (distance <= 2f)
         {
@@ -50,7 +48,7 @@ public class NPC_Behavior_LightSoldier : MonoBehaviour
 
                 if (patrolNodeElement == numofPatrolNodes)
                 {
-
+                    PatrolNodes.Reverse();
                     patrolNodeElement = 0;
                 }
             }
