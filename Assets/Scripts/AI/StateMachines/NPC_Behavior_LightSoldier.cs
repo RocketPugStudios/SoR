@@ -8,13 +8,12 @@ using UnityEngine.AI;
 
 public class NPC_Behavior_LightSoldier : MonoBehaviour
 {
-    public NavMeshAgent agent { get; private set;}
+    public NavMeshAgent agent {get;private set;}
     public int patrolNodeElement;
     [SerializeField] List<GameObject> PatrolNodes;
+    public Queue<Transform> PatrolNodesQueue;
     public int numofPatrolNodes;
     public float distance;
-    public float nxtPositionDelay;
-    public float countDown;
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -38,21 +37,21 @@ public class NPC_Behavior_LightSoldier : MonoBehaviour
     {
         distance = Vector3.Distance(agent.transform.position, PatrolNodes[patrolNodeElement].transform.localPosition);
         if (distance <= 2f)
-        {
-            countDown = countDown - Time.deltaTime;
-            if (countDown <= 0f)
-            {
-                countDown = countDown - Time.deltaTime;
-                patrolNodeElement++;
-                Debug.Log("NextNode");
-
-                if (patrolNodeElement == numofPatrolNodes)
-                {
+        {   
+            
+          patrolNodeElement++;
+          Debug.Log("NextNode");
+            
+          if (patrolNodeElement == numofPatrolNodes)
+          {
                     PatrolNodes.Reverse();
                     patrolNodeElement = 0;
-                }
-            }
-           
-        }  
+          }
+        }     
+    }
+
+    private void setNavigation(Transform position)
+    {
+        PatrolNodesQueue.Enqueue(position); 
     }
 }

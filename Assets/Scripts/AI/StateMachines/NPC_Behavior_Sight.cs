@@ -62,7 +62,6 @@ public class NPC_Behavior_Sight : MonoBehaviour
         else if (canSeePlayer)
             canSeePlayer = false; // No targets found, reset canSeePlayer flag
     }
-
     private void OnDrawGizmos()
     {
       
