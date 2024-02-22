@@ -24,7 +24,7 @@ RenderSettings:
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
-  m_AmbientMode: 0
+  m_AmbientMode: 4
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
   m_SkyboxMaterial: {fileID: 0}
   m_HaloStrength: 0.5
@@ -1060,6 +1060,21 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3268587733787373535, guid: b616777453bc86240aae91d11f39cc58,
         type: 3}
+      propertyPath: offset.x
+      value: -0.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 3268587733787373535, guid: b616777453bc86240aae91d11f39cc58,
+        type: 3}
+      propertyPath: offset.y
+      value: 6.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3268587733787373535, guid: b616777453bc86240aae91d11f39cc58,
+        type: 3}
+      propertyPath: offset.z
+      value: -8.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3268587733787373535, guid: b616777453bc86240aae91d11f39cc58,
+        type: 3}
       propertyPath: playerTransform
       value: 
       objectReference: {fileID: 1481735191}
@@ -1081,7 +1096,7 @@ PrefabInstance:
     - target: {fileID: 7496566553222005373, guid: b616777453bc86240aae91d11f39cc58,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -13.5
+      value: -22.06
       objectReference: {fileID: 0}
     - target: {fileID: 7496566553222005373, guid: b616777453bc86240aae91d11f39cc58,
         type: 3}
@@ -1122,6 +1137,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Main Camera
+      objectReference: {fileID: 0}
+    - target: {fileID: 7756668946158768185, guid: b616777453bc86240aae91d11f39cc58,
+        type: 3}
+      propertyPath: orthographic
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7756668946158768185, guid: b616777453bc86240aae91d11f39cc58,
+        type: 3}
+      propertyPath: field of view
+      value: 81
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
