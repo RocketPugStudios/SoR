@@ -37,10 +37,10 @@ public class NPC_Behavior_LightSoldier : MonoBehaviour
         {
             PatrolNodes.Add(patrolNode);
             numofPatrolNodes++;
-            Route(patrolNode.transform);
+           
         }  
     }
-    /*
+    
     private void setNextDestination()
     {
         //distance = Vector3.Distance(agent.transform.position, PatrolNodes[patrolNodeIndex].transform.localPosition);
@@ -59,13 +59,7 @@ public class NPC_Behavior_LightSoldier : MonoBehaviour
           }
         }     
     }
-    */
-    private void Route(Transform patrolNodes)
-    {
-        
-        PatrolNodesQueue.Enqueue(patrolNodes); 
-        
-
-    }
+    
+    
   
 }
