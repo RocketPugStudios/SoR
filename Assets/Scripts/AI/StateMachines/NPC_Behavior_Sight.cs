@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class NPC_Behavior_Sight : MonoBehaviour
 {
@@ -53,6 +55,7 @@ public class NPC_Behavior_Sight : MonoBehaviour
                 // Raycast to check for obstacles in the line of sight
                 if (!Physics.Raycast(transform.position, directionToTarget, distanceToTarget, obstacle))
                     canSeePlayer = true; // Player is within FOV and not obstructed by obstacles
+
                 else
                     canSeePlayer = false; // Player is obstructed by obstacles
             }
@@ -66,4 +69,6 @@ public class NPC_Behavior_Sight : MonoBehaviour
     {
       
     }
+   
+    
 }

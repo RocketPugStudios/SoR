@@ -15,6 +15,7 @@ public class NPC_Behavior_LightSoldier : MonoBehaviour
     public int numofPatrolNodes;
     public float distance;
     public bool routeLoaded;
+    
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
