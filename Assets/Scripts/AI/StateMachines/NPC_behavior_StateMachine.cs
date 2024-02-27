@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Net.NetworkInformation;
 using System.Threading;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UIElements;
@@ -16,22 +17,28 @@ public class NPC_behavior_StateMachine : MonoBehaviour
         Investigate,
         
     }
-        public NPCState currentState = NPCState.Idle;
-        // Patrol behavior settings 
-        public NavMeshAgent agent;
-        public int patrolNodeIndex;
-        [SerializeField] List<GameObject> PatrolNodes;
-        public Queue<GameObject> playerNavQueue = new Queue<GameObject>();
-        public int numofPatrolNodes;
-        public float distance;
-        public bool routeLoaded;
-        public Vector3 targetDestination;
-        public bool moving;
-        public float countdown;
+
+
+    [Header("Behavior Relationships")]
+    [SerializeField] public NPC_Behavior_Sight sightBehavior;
+
+    [Header("Patrol Behavior Settings")]
+    public NPCState currentState = NPCState.Idle;
+    [SerializeField] public NavMeshAgent agent;
+    [SerializeField] public int patrolNodeIndex;
+    [SerializeField] List<GameObject> PatrolNodes;
+    [SerializeField] public Queue<GameObject> enemyNavQueue = new Queue<GameObject>();
+    [SerializeField] public int numofPatrolNodes;
+    [SerializeField] public float distance;
+    [SerializeField] public Vector3 targetDestination;
+    [SerializeField] public float countdown;
     private void Awake()
     {
+        sightBehavior = GetComponent<NPC_Behavior_Sight>();
         PlanRoute();
-        agent = GetComponent<NavMeshAgent>();  
+        agent = GetComponent<NavMeshAgent>();
+        PatrolNodes[0].transform.parent.SetParent(null);
+        PatrolNodes[0].transform.parent.gameObject.hideFlags = HideFlags.HideInHierarchy;
     }
     void Update()
     {
@@ -40,6 +47,7 @@ public class NPC_behavior_StateMachine : MonoBehaviour
             PatrolNodes.Reverse();
             patrolNodeIndex = 0;
         }
+
         distance = Vector3.Distance(agent.transform.position, PatrolNodes[patrolNodeIndex].transform.localPosition);
 
         switch (currentState)
@@ -69,9 +77,9 @@ public class NPC_behavior_StateMachine : MonoBehaviour
     void PatrolState()
     {
         countdown = 0;
-        if (playerNavQueue.Count != 0)
+        if (enemyNavQueue.Count != 0)
         {
-            targetDestination = playerNavQueue.Dequeue().transform.localPosition;           
+            targetDestination = enemyNavQueue.Dequeue().transform.localPosition;           
             agent.SetDestination(targetDestination);
         }
        if(distance <= 2f)
@@ -79,16 +87,28 @@ public class NPC_behavior_StateMachine : MonoBehaviour
             patrolNodeIndex++;
             currentState = NPCState.Idle;
         }
+
     }
     void InvestigationState()
     {
 
+        countdown = 0;
+        if (enemyNavQueue.Count != 0)
+        {
+            targetDestination = enemyNavQueue.Dequeue().transform.localPosition;
+            agent.SetDestination(targetDestination);
+        }
+        if (distance <= 2f)
+        {
+            
+            currentState = NPCState.Idle;
+        }
+
     }
     public void PlanRoute()
          {
-             // store waypoints into an array
-             GameObject[] findNodes = GameObject.FindGameObjectsWithTag("PatrolNode");
-
+        // store waypoints into an array
+        GameObject[] findNodes = GameObject.FindGameObjectsWithTag("PatrolNode");
              // loop each time a waypoint is found in an array then store the waypoint into a list.
              foreach (GameObject patrolNode in findNodes)
                 {       
@@ -98,22 +118,37 @@ public class NPC_behavior_StateMachine : MonoBehaviour
          }
      public void goTowards()
     {
-        if (playerNavQueue.Count == 0 && !moving)//if queue is empty
+        if (enemyNavQueue.Count == 0)//if queue is empty
         {
-            playerNavQueue.Enqueue(PatrolNodes[patrolNodeIndex]);//add location from list at index x into qeueu, 
-            Debug.Log(playerNavQueue.Count);
+            enemyNavQueue.Enqueue(PatrolNodes[patrolNodeIndex]);//add location from list at index x into qeueu, 
+            Debug.Log(enemyNavQueue.Count);
             /* if the index is equal to the patrol nodes list reverse the patrol nodes list then reset the index count*/   
         }
     }
 
-
-    public void playerPosition()
+    public void goTowardsAnomolyPosition()
     {
-        Transform currentplayerposition;
-        if (this.gameObject.GetComponent<NPC_Behavior_Sight>().canSeePlayer)
+       
+        if (sightBehavior.canSeePlayer)
         {
-            currentplayerposition = this.gameObject.GetComponent<NPC_Behavior_Sight>().playerReference.transform;
-            PatrolPointsQueue.Enqueue(currentplayerposition) ;
+            GameObject currentPlayerPosition = sightBehavior.playerReference;
+            enemyNavQueue.Clear();
+            enemyNavQueue.Enqueue(currentPlayerPosition);
+
+            if (enemyNavQueue.Count == 1)
+            {
+                //Vector3 targetDestination = enemyNavQueue.Dequeue();
+                //agent.SetDestination(enemyNavQueue.Dequeue());
+            }
+            
+        }
+    }
+
+    public void anomaly()
+    {
+      if (sightBehavior.canSeePlayer)
+        {
+            currentState = NPCState.Investigate;
         }
     }
     //getters & setters
