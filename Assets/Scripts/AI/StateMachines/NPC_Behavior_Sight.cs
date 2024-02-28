@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
@@ -17,12 +18,13 @@ public class NPC_Behavior_Sight : MonoBehaviour
     [SerializeField] public bool canSeePlayer;
 
     [Header("Layer Maskes")]
-    [SerializeField] public LayerMask player;
-    [SerializeField] public LayerMask obstacle;
+    [SerializeField] public LayerMask Player;
+    [SerializeField] public LayerMask Obstacle;
 
     private void Awake()
     {
         playerReference = GameObject.FindGameObjectWithTag("Player");
+        StartCoroutine(FOVRoutine());
     }
     private IEnumerator FOVRoutine()
     {
@@ -35,11 +37,12 @@ public class NPC_Behavior_Sight : MonoBehaviour
     }
     private void FieldOfViewCheck()
     {
-        Collider[] rangeChecks = Physics.OverlapSphere(transform.position, sphere_radius, player);
+        Collider[] rangeChecks = Physics.OverlapSphere(transform.position, sphere_radius, Player);
 
         //Check if there any colliders available
         if (rangeChecks.Length != 0)
         {
+          //  Debug.Log("First Check Complete");
             // Get the first target's transform
             Transform target = rangeChecks[0].transform;
 
@@ -49,13 +52,16 @@ public class NPC_Behavior_Sight : MonoBehaviour
             // Check if the angle between forward direction and direction to target is within the FOV
             if (Vector3.Angle(transform.forward, directionToTarget) < angle / 2)
             {
+               // Debug.Log("Second Check Complete");
                 // Calculate the distance to the target
                 float distanceToTarget = Vector3.Distance(transform.position, target.position);
 
                 // Raycast to check for obstacles in the line of sight
-                if (!Physics.Raycast(transform.position, directionToTarget, distanceToTarget, obstacle))
+                if (!Physics.Raycast(transform.position, directionToTarget, distanceToTarget, Obstacle))
+                {
                     canSeePlayer = true; // Player is within FOV and not obstructed by obstacles
-
+                   // Debug.Log("player seen");
+                }
                 else
                     canSeePlayer = false; // Player is obstructed by obstacles
             }
@@ -65,10 +71,7 @@ public class NPC_Behavior_Sight : MonoBehaviour
         else if (canSeePlayer)
             canSeePlayer = false; // No targets found, reset canSeePlayer flag
     }
-    private void OnDrawGizmos()
-    {
-      
-    }
+   
    
     
 }
