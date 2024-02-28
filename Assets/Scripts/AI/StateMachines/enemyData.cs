@@ -7,6 +7,7 @@ public class enemyData : ScriptableObject
 {
     public Vector3 EnemyPos;
     public List<GameObject> enemiesInScene;
+   
 
         
     

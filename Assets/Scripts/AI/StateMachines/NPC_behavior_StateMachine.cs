@@ -32,7 +32,8 @@ public class NPC_behavior_StateMachine : MonoBehaviour
     [SerializeField] public int numofPatrolNodes;
     [SerializeField] public float distance;
     [SerializeField] public Vector3 targetDestination;
-    [SerializeField] public float countdown;
+    [SerializeField] public float counter;
+    [SerializeField] public int setTimer;
     private Transform getPlayerPosition;
     private bool isNavigatingTowardsPlayer = false;
     private Vector3 targetPosition;
@@ -76,15 +77,17 @@ public class NPC_behavior_StateMachine : MonoBehaviour
     void IdleState()
     {
         goTowards();
-        countdown = countdown - Time.deltaTime ;
-        if (countdown <= 0f)
+        if (counter >= setTimer)
         {
+            
             currentState = NPCState.Patrol;
-        }
+        }  
+       
+        counter = counter + Time.deltaTime;
     }
     void PatrolState()
     {
-        countdown = 0;
+        counter = 0;
         if (enemyNavQueue.Count != 0) // if there are waypoints in queue
         {
             targetDestination = enemyNavQueue.Dequeue().transform.localPosition;           
@@ -100,7 +103,7 @@ public class NPC_behavior_StateMachine : MonoBehaviour
     void InvestigationState()
     {
         Debug.Log("investigation state");
-        countdown = 0;
+        counter = 0;
         //Vector3 npcPOS = agent.transform.position;
             enemyNavQueue.Clear(); //clear queue 
         if (enemyNavQueue.Count <= 0 && !isNavigatingTowardsPlayer) // if there are no waypoints in queue
@@ -185,7 +188,11 @@ public class NPC_behavior_StateMachine : MonoBehaviour
         }
     }
 
- 
+    private void ResetPatrolTimer()
+    {
+        counter = 0;
+    }
+
 
 
     //getters & setters
