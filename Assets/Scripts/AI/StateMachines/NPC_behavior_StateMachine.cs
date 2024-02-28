@@ -34,6 +34,8 @@ public class NPC_behavior_StateMachine : MonoBehaviour
     [SerializeField] public Vector3 targetDestination;
     [SerializeField] public float countdown;
     private Transform getPlayerPosition;
+    private bool isNavigatingTowardsPlayer = false;
+    private Vector3 targetPosition;
     private void Awake()
     {
         sightBehavior = GetComponent<NPC_Behavior_Sight>();
@@ -41,6 +43,7 @@ public class NPC_behavior_StateMachine : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         PatrolNodes[0].transform.parent.SetParent(null);
         PatrolNodes[0].transform.parent.gameObject.hideFlags = HideFlags.HideInHierarchy;
+        
     }
     void Update()
     {
@@ -51,7 +54,10 @@ public class NPC_behavior_StateMachine : MonoBehaviour
             patrolNodeIndex = 0;
         }
 
-        distance = Vector3.Distance(agent.transform.position, PatrolNodes[patrolNodeIndex].transform.localPosition);
+
+        setTargetPosition();
+            //distance = Vector3.Distance(agent.transform.position, PatrolNodes[patrolNodeIndex].transform.localPosition);
+
 
         switch (currentState)
         {
@@ -63,8 +69,7 @@ public class NPC_behavior_StateMachine : MonoBehaviour
                 break;
             case NPCState.Investigate:
                 InvestigationState();
-                break;
-                
+                break;    
         }
     }
 
@@ -95,37 +100,62 @@ public class NPC_behavior_StateMachine : MonoBehaviour
     void InvestigationState()
     {
         Debug.Log("investigation state");
-        
-
-        
-
         countdown = 0;
-       
-      
-      
-            enemyNavQueue.Clear(); //clear tha  
+        //Vector3 npcPOS = agent.transform.position;
+            enemyNavQueue.Clear(); //clear queue 
+        if (enemyNavQueue.Count <= 0 && !isNavigatingTowardsPlayer) // if there are no waypoints in queue
+        {
             enemyNavQueue.Enqueue(sightBehavior.playerReference);//place player seen location in queue
+            
             Debug.Log("placed waypoint in queue");
-            if (enemyNavQueue.Count != 0)
+            if (enemyNavQueue.Count != 0) //if there are waypoints in queue
             {
+                isNavigatingTowardsPlayer = true;
                 setPlayerPosition(enemyNavQueue.Dequeue().transform);
 
+                
                 targetDestination = GetPlayerPosition.position;
 
                 agent.SetDestination(targetDestination);
                 Debug.Log("Moving to target");
+
+               
+
             }
-            float  _distance = Vector3.Distance(this.gameObject.transform.position, targetDestination);
            
-            if (_distance <= 2f)
-            {
+            
 
-                currentState = NPCState.Idle;
-            }
-        
-        
+            //float _distance = Vector3.Distance(this.gameObject.transform.position, targetDestination);
 
+        }
+        if (distance <= 2f)
+        {
+            Debug.Log("distance met");
+            isNavigatingTowardsPlayer = false;
+            currentState = NPCState.Idle;
+        }
     }
+    //Functions
+
+   public Vector3 TargetPosition
+    {
+        get { return targetPosition; }
+    }
+
+    private void setTargetPosition() 
+    {
+        if (currentState == NPCState.Patrol || currentState == NPCState.Idle)
+        {
+            distance = Vector3.Distance(agent.transform.position, PatrolNodes[patrolNodeIndex].transform.localPosition); 
+        }
+        if(currentState == NPCState.Investigate)
+        {
+            distance = Vector3.Distance(agent.transform.position, targetDestination);
+        }
+       
+    }
+
+
     public void PlanRoute()
          {
         // store waypoints into an array
@@ -146,20 +176,18 @@ public class NPC_behavior_StateMachine : MonoBehaviour
             /* if the index is equal to the patrol nodes list reverse the patrol nodes list then reset the index count*/   
         }
     }
-
-    public void goTowardsAnomolyPosition()
-    {       
-        
-    }
-
     public void seenAnomaly()
     {
-      if (sightBehavior.canSeePlayer)
+      if (sightBehavior.canSeePlayer && currentState != NPCState.Investigate)
         {
             Debug.Log("player seen");
             currentState = NPCState.Investigate;
         }
     }
+
+ 
+
+
     //getters & setters
     public Queue<Transform> PatrolPointsQueue
     {
@@ -168,14 +196,16 @@ public class NPC_behavior_StateMachine : MonoBehaviour
             return PatrolPointsQueue;
         }
     }
-
     public Transform GetPlayerPosition
     {
         get { return getPlayerPosition; }
     }
-
     public void setPlayerPosition(Transform newPlayerPosition)
     {
-        getPlayerPosition = newPlayerPosition;
+        if (getPlayerPosition == null)
+        {
+            getPlayerPosition = newPlayerPosition;
+        }
     }
+    
 }
