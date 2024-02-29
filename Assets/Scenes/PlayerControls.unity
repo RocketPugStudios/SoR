@@ -24,7 +24,7 @@ RenderSettings:
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
-  m_AmbientMode: 4
+  m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
   m_SkyboxMaterial: {fileID: 0}
   m_HaloStrength: 0.5
@@ -123,6 +123,12 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &30179532 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5870475027754941502, guid: 4790cd130e245cf4d9ac5e5a26bdff2b,
+    type: 3}
+  m_PrefabInstance: {fileID: 3452537012797645308}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &289832719
 GameObject:
   m_ObjectHideFlags: 0
@@ -544,6 +550,12 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &949088397 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7496566553222005373, guid: b616777453bc86240aae91d11f39cc58,
+    type: 3}
+  m_PrefabInstance: {fileID: 9108983248400472589}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1028795467
 GameObject:
   m_ObjectHideFlags: 0
@@ -760,6 +772,21 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 3452537012797645308}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1481735198
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 30179532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a28cadf9e4b184740abb6dd3c744ac9b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 949088397}
+  offset: {x: -0.12, y: 6.5, z: -8.3}
+  rotationSpeed: 5
 --- !u!1 &1813212717
 GameObject:
   m_ObjectHideFlags: 0
@@ -1048,7 +1075,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5870475027754941502, guid: 4790cd130e245cf4d9ac5e5a26bdff2b,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1481735198}
   m_SourcePrefab: {fileID: 100100000, guid: 4790cd130e245cf4d9ac5e5a26bdff2b, type: 3}
 --- !u!1001 &9108983248400472589
 PrefabInstance:
@@ -1072,6 +1103,11 @@ PrefabInstance:
         type: 3}
       propertyPath: offset.z
       value: -8.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3268587733787373535, guid: b616777453bc86240aae91d11f39cc58,
+        type: 3}
+      propertyPath: rotationSpeed
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3268587733787373535, guid: b616777453bc86240aae91d11f39cc58,
         type: 3}
