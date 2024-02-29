@@ -14,7 +14,6 @@ public class CharacterMovement : MonoBehaviour
     }
 
     void Update()
-
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -26,7 +25,7 @@ public class CharacterMovement : MonoBehaviour
         }
 
         Vector3 lookDir = lookPos - transform.position;
-        lookDir.y = 0;
+        lookDir.y = 0; // Keep the direction in the horizontal plane
 
         transform.LookAt(transform.position + lookDir, Vector3.up);
     }
@@ -36,11 +35,10 @@ public class CharacterMovement : MonoBehaviour
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
 
+        // Convert input into a movement vector based on the camera's orientation
+        Vector3 movement = new Vector3(horizontal, 0, vertical);
+        movement = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0) * movement; // Adjust movement direction based on camera rotation
 
-        Vector3 movement = new Vector3(horizontal,0,vertical);
-
-        rigidbody.AddForce(movement * speed / Time.deltaTime );
-
-
+        rigidbody.AddForce(movement * speed / Time.deltaTime);
     }
 }
