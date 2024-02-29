@@ -16,6 +16,7 @@ public class NPC_Behavior_Sight : MonoBehaviour
     [Range(0, 360)]
     [SerializeField] public float angle;
     [SerializeField] public bool canSeePlayer;
+    [SerializeField] public bool playerDangerClose;
 
     [Header("Layer Maskes")]
     [SerializeField] public LayerMask Player;
@@ -60,7 +61,7 @@ public class NPC_Behavior_Sight : MonoBehaviour
                 if (!Physics.Raycast(transform.position, directionToTarget, distanceToTarget, Obstacle))
                 {
                     canSeePlayer = true; // Player is within FOV and not obstructed by obstacles
-                   // Debug.Log("player seen");
+                   
                 }
                 else
                     canSeePlayer = false; // Player is obstructed by obstacles

@@ -7,24 +7,37 @@ public class enemyData : ScriptableObject
 {
     public Vector3 EnemyPos;
     public List<GameObject> enemiesInScene;
-   
+    public int enemyCountInMap;
 
         
     
-
+    
 
 
 
     public void Awake()
     {
-        enemiesInScene = new List<GameObject>();
+       collectEnemiesInMap();
+        
 
     }
-    
+    public void Update()
+    {
+
+    }
+
 
     private void collectEnemiesInMap()
     {
-
+        enemiesInScene = new List<GameObject>(GameObject.FindGameObjectsWithTag("enemy"));
+        
+        foreach ( GameObject enemy in enemiesInScene)
+        {
+            
+            enemyCountInMap++;
+            Debug.Log( enemyCountInMap + " enemy logged");
+        }
+       
     }
 
 

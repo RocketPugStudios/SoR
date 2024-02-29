@@ -16,10 +16,10 @@ public class NPC_behavior_StateMachine : MonoBehaviour
         Idle,
         Patrol,
         Investigate,
-        
+        Attack,      
     }
 
-
+    /*-------------------------------------------*   VALUES   *--------------------------------*/
     [Header("Behavior Relationships")]
     [SerializeField] public NPC_Behavior_Sight sightBehavior;
 
@@ -34,6 +34,7 @@ public class NPC_behavior_StateMachine : MonoBehaviour
     [SerializeField] public Vector3 targetDestination;
     [SerializeField] public float counter;
     [SerializeField] public int setTimer;
+    [SerializeField] public bool threatSpotted;
     private Transform getPlayerPosition;
     private bool isNavigatingTowardsPlayer = false;
     private Vector3 targetPosition;
@@ -48,6 +49,7 @@ public class NPC_behavior_StateMachine : MonoBehaviour
     }
     void Update()
     {
+        
         seenAnomaly();
         if (patrolNodeIndex == numofPatrolNodes)
         {
@@ -57,9 +59,7 @@ public class NPC_behavior_StateMachine : MonoBehaviour
 
 
         setTargetPosition();
-            //distance = Vector3.Distance(agent.transform.position, PatrolNodes[patrolNodeIndex].transform.localPosition);
-
-
+          /*---------------------------*   States   *-----------------------------------------------------------------*/
         switch (currentState)
         {
             case NPCState.Idle:
@@ -70,10 +70,14 @@ public class NPC_behavior_StateMachine : MonoBehaviour
                 break;
             case NPCState.Investigate:
                 InvestigationState();
-                break;    
+                break;
+            case NPCState.Attack:
+                AttackState();
+                
+                break;
         }
     }
-
+     /* -------------------------------------*   State Behaviors   *--------------------------------------------*/
     void IdleState()
     {
         goTowards();
@@ -102,7 +106,7 @@ public class NPC_behavior_StateMachine : MonoBehaviour
     }
     void InvestigationState()
     {
-        Debug.Log("investigation state");
+        //Debug.Log("investigation state");
         counter = 0;
         //Vector3 npcPOS = agent.transform.position;
             enemyNavQueue.Clear(); //clear queue 
@@ -110,7 +114,7 @@ public class NPC_behavior_StateMachine : MonoBehaviour
         {
             enemyNavQueue.Enqueue(sightBehavior.playerReference);//place player seen location in queue
             
-            Debug.Log("placed waypoint in queue");
+           // Debug.Log("placed waypoint in queue");
             if (enemyNavQueue.Count != 0) //if there are waypoints in queue
             {
                 isNavigatingTowardsPlayer = true;
@@ -120,27 +124,33 @@ public class NPC_behavior_StateMachine : MonoBehaviour
                 targetDestination = GetPlayerPosition.position;
 
                 agent.SetDestination(targetDestination);
-                Debug.Log("Moving to target");
+               // Debug.Log("Moving to target");
 
                
 
             }
-           
-            
-
-            //float _distance = Vector3.Distance(this.gameObject.transform.position, targetDestination);
 
         }
         if (distance <= 2f)
         {
-            Debug.Log("distance met");
+           // Debug.Log("Distance Met");
             isNavigatingTowardsPlayer = false;
             currentState = NPCState.Idle;
         }
     }
-    //Functions
+   void AttackState()
+    {
+        while(sightBehavior.canSeePlayer){
+            
+            if (distance <= 15f)
+            {
 
-   public Vector3 TargetPosition
+            }
+        }
+    }
+    /*------------------------------------------------------------*   Functions   *---------------------------------------------------------------*/
+
+    public Vector3 TargetPosition
     {
         get { return targetPosition; }
     }
@@ -157,7 +167,6 @@ public class NPC_behavior_StateMachine : MonoBehaviour
         }
        
     }
-
 
     public void PlanRoute()
          {
@@ -193,9 +202,24 @@ public class NPC_behavior_StateMachine : MonoBehaviour
         counter = 0;
     }
 
+    public void ThreatSpotted()
+    {
+    
+        while (sightBehavior.canSeePlayer)
+        {
+
+            if (distance <=  5f)
+            {
+
+            }
+
+           
+        }
+    }
 
 
-    //getters & setters
+
+    /*------------------------------------------*   getters & setters   *-----------------------------------------*/
     public Queue<Transform> PatrolPointsQueue
     {
         get
@@ -214,5 +238,7 @@ public class NPC_behavior_StateMachine : MonoBehaviour
             getPlayerPosition = newPlayerPosition;
         }
     }
+
+
     
 }
