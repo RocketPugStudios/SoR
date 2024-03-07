@@ -131,7 +131,7 @@ public class NPC_behavior_StateMachine : MonoBehaviour
             }
 
         }
-        if (distance <= 2f)
+        if (distance <= 1f)
         {
            // Debug.Log("Distance Met");
             isNavigatingTowardsPlayer = false;
@@ -218,8 +218,8 @@ public class NPC_behavior_StateMachine : MonoBehaviour
     }
 
 
-
     /*------------------------------------------*   getters & setters   *-----------------------------------------*/
+    /*
     public Queue<Transform> PatrolPointsQueue
     {
         get
@@ -227,6 +227,7 @@ public class NPC_behavior_StateMachine : MonoBehaviour
             return PatrolPointsQueue;
         }
     }
+    */
     public Transform GetPlayerPosition
     {
         get { return getPlayerPosition; }
