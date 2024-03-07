@@ -43,8 +43,9 @@ public class NPC_behavior_StateMachine : MonoBehaviour
         sightBehavior = GetComponent<NPC_Behavior_Sight>();
         PlanRoute();
         agent = GetComponent<NavMeshAgent>();
+
         PatrolNodes[0].transform.parent.SetParent(null);
-        PatrolNodes[0].transform.parent.gameObject.hideFlags = HideFlags.HideInHierarchy;
+        //PatrolNodes[0].transform.parent.gameObject.hideFlags = HideFlags.HideInHierarchy;
         
     }
     void Update()
@@ -94,7 +95,7 @@ public class NPC_behavior_StateMachine : MonoBehaviour
         counter = 0;
         if (enemyNavQueue.Count != 0) // if there are waypoints in queue
         {
-            targetDestination = enemyNavQueue.Dequeue().transform.localPosition;           
+            targetDestination = enemyNavQueue.Dequeue().transform.position;           
             agent.SetDestination(targetDestination);
         }
        if(distance <= 2f)
@@ -171,19 +172,27 @@ public class NPC_behavior_StateMachine : MonoBehaviour
     public void PlanRoute()
          {
         // store waypoints into an array
-        GameObject[] findNodes = GameObject.FindGameObjectsWithTag("PatrolNode");
-             // loop each time a waypoint is found in an array then store the waypoint into a list.
-             foreach (GameObject patrolNode in findNodes)
-                {       
-                      PatrolNodes.Add(patrolNode);  
-                      numofPatrolNodes++;
-                }                 
+        foreach(Transform child in transform.GetChild(0))
+        {
+            if( child.CompareTag("PatrolNode"))
+            {
+                PatrolNodes.Add(child.gameObject);
+            }
+        }
+
+        //GameObject[] findNodes = GameObject.FindGameObjectsWithTag("PatrolNode");
+        //     // loop each time a waypoint is found in an array then store the waypoint into a list.
+        //     foreach (GameObject patrolNode in findNodes)
+        //        {       
+        //              PatrolNodes.Add(patrolNode);  
+        //              numofPatrolNodes++;
+        //        }                 
          }
      public void goTowards()
     {
         if (enemyNavQueue.Count == 0)//if queue is empty
         {
-            enemyNavQueue.Enqueue(PatrolNodes[patrolNodeIndex]);//add location from list at index x into qeueu, 
+            enemyNavQueue.Enqueue(PatrolNodes[patrolNodeIndex]);//add location from list at index x into queue, 
             Debug.Log(enemyNavQueue.Count);
             /* if the index is equal to the patrol nodes list reverse the patrol nodes list then reset the index count*/   
         }
