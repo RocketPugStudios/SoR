@@ -160,7 +160,7 @@ public class NPC_behavior_StateMachine : MonoBehaviour
     {
         if (currentState == NPCState.Patrol || currentState == NPCState.Idle)
         {
-            distance = Vector3.Distance(agent.transform.position, PatrolNodes[patrolNodeIndex].transform.localPosition); 
+            distance = Vector3.Distance(this.transform.position, PatrolNodes[patrolNodeIndex].transform.position); 
         }
         if(currentState == NPCState.Investigate)
         {
@@ -169,7 +169,7 @@ public class NPC_behavior_StateMachine : MonoBehaviour
        
     }
 
-    public void PlanRoute()
+    private void PlanRoute()
          {
         // store waypoints into an array
         foreach(Transform child in transform.GetChild(0))
@@ -177,6 +177,7 @@ public class NPC_behavior_StateMachine : MonoBehaviour
             if( child.CompareTag("PatrolNode"))
             {
                 PatrolNodes.Add(child.gameObject);
+                numofPatrolNodes++;
             }
         }
 
@@ -188,7 +189,7 @@ public class NPC_behavior_StateMachine : MonoBehaviour
         //              numofPatrolNodes++;
         //        }                 
          }
-     public void goTowards()
+     private void goTowards()
     {
         if (enemyNavQueue.Count == 0)//if queue is empty
         {
