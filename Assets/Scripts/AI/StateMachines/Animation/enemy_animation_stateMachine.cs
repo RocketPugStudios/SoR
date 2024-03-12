@@ -21,38 +21,29 @@ public class enemy_animation_stateMachine : MonoBehaviour
         if ( behaviorStateMachine.currentState == NPC_behavior_StateMachine.NPCState.Idle)
         {
             animator.SetBool("isWalking",false);
+            animator.SetBool("playerisSpotted", false);
         }
 
         if (behaviorStateMachine.currentState == NPC_behavior_StateMachine.NPCState.Patrol)
         {
             animator.SetBool("isWalking", true);
+            animator.SetBool("playerisSpotted", false);
         }
-    }
 
-/*
-    private void OnEnable()
-    {
-        Actions.walking += startWalkAnimation;
-        Actions.stopWalking += stopWalkAnimation;
-    }
+        if (behaviorStateMachine.currentState == NPC_behavior_StateMachine.NPCState.Investigate)
+        {
+            animator.SetBool("isWalking", true);
+            animator.SetBool("playerisSpotted", false);
+        }
 
-    private void OnDisable()
-    {
-        Actions.walking -= startWalkAnimation;
-        Actions.stopWalking -= stopWalkAnimation;
-    }
+        if (behaviorStateMachine.currentState == NPC_behavior_StateMachine.NPCState.Combat)
+        {
+            animator.SetBool("playerisSpotted" , true);
+        }
 
-    private void startWalkAnimation()
-    {
-       this.animator.SetBool("isWalking",true);
-       
-    }
-    private void stopWalkAnimation()
-    {
-        this.animator.SetBool("isWalking", false);
 
     }
 
-    */
+
 }
 

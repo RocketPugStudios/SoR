@@ -16,12 +16,13 @@ public class NPC_behavior_StateMachine : MonoBehaviour
         Idle,
         Patrol,
         Investigate,
-        Attack,      
+        Combat,      
     }
 
     /*-------------------------------------------*   VALUES   *--------------------------------*/
     [Header("Behavior Relationships")]
     [SerializeField] public NPC_Behavior_Sight sightBehavior;
+    //[SerializeField] public 
 
     [Header("Patrol Behavior Settings")]
     public NPCState currentState = NPCState.Idle;
@@ -72,9 +73,8 @@ public class NPC_behavior_StateMachine : MonoBehaviour
             case NPCState.Investigate:
                 InvestigationState();
                 break;
-            case NPCState.Attack:
-                AttackState();
-                
+            case NPCState.Combat:
+                CombatState();     
                 break;
         }
     }
@@ -91,7 +91,7 @@ public class NPC_behavior_StateMachine : MonoBehaviour
     }
     void PatrolState()
     {
-        Invoke("ResetPatrolTimer", 2f);
+        Invoke("ResetPatrolTimer", 1f);
         
         if (enemyNavQueue.Count != 0) // if there are waypoints in queue
         {
@@ -100,7 +100,7 @@ public class NPC_behavior_StateMachine : MonoBehaviour
         }
        if(distance <= 2f)
         {
-            Invoke("DelayedAction",2f);
+            //Invoke("DelayedAction",2f);
             patrolNodeIndex++;
             currentState = NPCState.Idle;
         }
@@ -130,17 +130,29 @@ public class NPC_behavior_StateMachine : MonoBehaviour
             isNavigatingTowardsPlayer = false;
             currentState = NPCState.Idle;
         }
+
+        if (distance <= 10f && sightBehavior.canSeePlayer)
+        {
+            isNavigatingTowardsPlayer = false;
+            StopAgent();
+            
+            currentState = NPCState.Combat;
+        }
     }
 
-   void AttackState()
+   void CombatState()
     {
-        while(sightBehavior.canSeePlayer){
-            
-            if (distance <= 15f)
-            {
 
-            }
-        }
+
+
+        Vector3 direction = sightBehavior.playerReference.transform.position - transform.position;
+        Quaternion rotation = Quaternion.LookRotation(direction);
+        transform.rotation = rotation;
+
+
+       //transform.LookAt(sightBehavior.playerReference.transform);
+            
+        
     }
     /*------------------------------------------------------------*   Functions   *---------------------------------------------------------------*/
 
@@ -184,6 +196,20 @@ public class NPC_behavior_StateMachine : MonoBehaviour
             /* if the index is equal to the patrol nodes list reverse the patrol nodes list then reset the index count*/   
         }
     }
+
+    private void StopAgent()
+    {
+        
+        if (enemyNavQueue.Count != 0 || enemyNavQueue.Count == 0 )//if queue is empty or filled
+        {
+            GameObject stoppedLocation = agent.gameObject;
+            enemyNavQueue.Clear();
+            enemyNavQueue.Enqueue(stoppedLocation);//add location from list at index x into queue, 
+           
+            targetDestination = enemyNavQueue.Dequeue().transform.position;
+            agent.SetDestination(targetDestination);
+        }
+    }
     public void seenAnomaly()
     {
       if (sightBehavior.canSeePlayer && currentState != NPCState.Investigate)
@@ -212,7 +238,12 @@ public class NPC_behavior_StateMachine : MonoBehaviour
            
         }
     }
+    public void shootplayer()
+    {
+        Ray ray;
 
+       // Physics.Raycast(this);
+    }
 
     /*------------------------------------------*   getters & setters   *-----------------------------------------*/
     /*
@@ -235,6 +266,8 @@ public class NPC_behavior_StateMachine : MonoBehaviour
             getPlayerPosition = newPlayerPosition;
         }
     }
+
+    
     /*-----------------------------------------*  Subscriptions  *--------------------------------------------------*/
 
    
