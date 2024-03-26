@@ -6,6 +6,7 @@ TagManager:
   tags:
   - PatrolNode
   - PatrolNodeParent
+  - enemyWeapon
   layers:
   - Default
   - TransparentFX

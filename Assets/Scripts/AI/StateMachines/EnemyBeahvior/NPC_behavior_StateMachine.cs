@@ -16,12 +16,13 @@ public class NPC_behavior_StateMachine : MonoBehaviour
         Idle,
         Patrol,
         Investigate,
-        Attack,      
+        Combat,      
     }
 
     /*-------------------------------------------*   VALUES   *--------------------------------*/
     [Header("Behavior Relationships")]
     [SerializeField] public NPC_Behavior_Sight sightBehavior;
+    //[SerializeField] public 
 
     [Header("Patrol Behavior Settings")]
     public NPCState currentState = NPCState.Idle;
@@ -72,34 +73,34 @@ public class NPC_behavior_StateMachine : MonoBehaviour
             case NPCState.Investigate:
                 InvestigationState();
                 break;
-            case NPCState.Attack:
-                AttackState();
-                
+            case NPCState.Combat:
+                CombatState();     
                 break;
         }
     }
      /* -------------------------------------*   State Behaviors   *--------------------------------------------*/
     void IdleState()
     {
+       //Actions.stopWalking();
         goTowards();
         if (counter >= setTimer)
-        {
-            
+        {  
             currentState = NPCState.Patrol;
         }  
-       
         counter = counter + Time.deltaTime;
     }
     void PatrolState()
     {
-        counter = 0;
+        Invoke("ResetPatrolTimer", 1f);
+        
         if (enemyNavQueue.Count != 0) // if there are waypoints in queue
         {
             targetDestination = enemyNavQueue.Dequeue().transform.position;           
             agent.SetDestination(targetDestination);
         }
        if(distance <= 2f)
-        {        
+        {
+            //Invoke("DelayedAction",2f);
             patrolNodeIndex++;
             currentState = NPCState.Idle;
         }
@@ -114,23 +115,14 @@ public class NPC_behavior_StateMachine : MonoBehaviour
         if (enemyNavQueue.Count <= 0 && !isNavigatingTowardsPlayer) // if there are no waypoints in queue
         {
             enemyNavQueue.Enqueue(sightBehavior.playerReference);//place player seen location in queue
-            
-           // Debug.Log("placed waypoint in queue");
+            // Debug.Log("placed waypoint in queue");
             if (enemyNavQueue.Count != 0) //if there are waypoints in queue
             {
                 isNavigatingTowardsPlayer = true;
                 setPlayerPosition(enemyNavQueue.Dequeue().transform);
-
-                
                 targetDestination = GetPlayerPosition.position;
-
                 agent.SetDestination(targetDestination);
-               // Debug.Log("Moving to target");
-
-               
-
             }
-
         }
         if (distance <= 1f)
         {
@@ -138,16 +130,29 @@ public class NPC_behavior_StateMachine : MonoBehaviour
             isNavigatingTowardsPlayer = false;
             currentState = NPCState.Idle;
         }
-    }
-   void AttackState()
-    {
-        while(sightBehavior.canSeePlayer){
-            
-            if (distance <= 15f)
-            {
 
-            }
+        if (distance <= 10f && sightBehavior.canSeePlayer)
+        {
+            isNavigatingTowardsPlayer = false;
+            StopAgent();
+            
+            currentState = NPCState.Combat;
         }
+    }
+
+   void CombatState()
+    {
+
+
+
+        Vector3 direction = sightBehavior.playerReference.transform.position - transform.position;
+        Quaternion rotation = Quaternion.LookRotation(direction);
+        transform.rotation = rotation;
+
+
+       //transform.LookAt(sightBehavior.playerReference.transform);
+            
+        
     }
     /*------------------------------------------------------------*   Functions   *---------------------------------------------------------------*/
 
@@ -160,7 +165,7 @@ public class NPC_behavior_StateMachine : MonoBehaviour
     {
         if (currentState == NPCState.Patrol || currentState == NPCState.Idle)
         {
-            distance = Vector3.Distance(agent.transform.position, PatrolNodes[patrolNodeIndex].transform.localPosition); 
+            distance = Vector3.Distance(this.transform.position, PatrolNodes[patrolNodeIndex].transform.position); 
         }
         if(currentState == NPCState.Investigate)
         {
@@ -169,32 +174,40 @@ public class NPC_behavior_StateMachine : MonoBehaviour
        
     }
 
-    public void PlanRoute()
-         {
+    private void PlanRoute()
+    {
         // store waypoints into an array
         foreach(Transform child in transform.GetChild(0))
         {
             if( child.CompareTag("PatrolNode"))
             {
                 PatrolNodes.Add(child.gameObject);
+                numofPatrolNodes++;
             }
         }
-
-        //GameObject[] findNodes = GameObject.FindGameObjectsWithTag("PatrolNode");
-        //     // loop each time a waypoint is found in an array then store the waypoint into a list.
-        //     foreach (GameObject patrolNode in findNodes)
-        //        {       
-        //              PatrolNodes.Add(patrolNode);  
-        //              numofPatrolNodes++;
-        //        }                 
-         }
-     public void goTowards()
+                
+    }
+     private void goTowards()
     {
         if (enemyNavQueue.Count == 0)//if queue is empty
         {
             enemyNavQueue.Enqueue(PatrolNodes[patrolNodeIndex]);//add location from list at index x into queue, 
             Debug.Log(enemyNavQueue.Count);
             /* if the index is equal to the patrol nodes list reverse the patrol nodes list then reset the index count*/   
+        }
+    }
+
+    private void StopAgent()
+    {
+        
+        if (enemyNavQueue.Count != 0 || enemyNavQueue.Count == 0 )//if queue is empty or filled
+        {
+            GameObject stoppedLocation = agent.gameObject;
+            enemyNavQueue.Clear();
+            enemyNavQueue.Enqueue(stoppedLocation);//add location from list at index x into queue, 
+           
+            targetDestination = enemyNavQueue.Dequeue().transform.position;
+            agent.SetDestination(targetDestination);
         }
     }
     public void seenAnomaly()
@@ -225,7 +238,12 @@ public class NPC_behavior_StateMachine : MonoBehaviour
            
         }
     }
+    public void shootplayer()
+    {
+        Ray ray;
 
+       // Physics.Raycast(this);
+    }
 
     /*------------------------------------------*   getters & setters   *-----------------------------------------*/
     /*
@@ -249,6 +267,13 @@ public class NPC_behavior_StateMachine : MonoBehaviour
         }
     }
 
-
     
+    /*-----------------------------------------*  Subscriptions  *--------------------------------------------------*/
+
+   
+
+
+
+
+
 }
