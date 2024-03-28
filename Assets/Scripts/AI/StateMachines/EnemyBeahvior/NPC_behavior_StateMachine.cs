@@ -142,18 +142,21 @@ public class NPC_behavior_StateMachine : MonoBehaviour
 
    void CombatState()
     {
-
-
-
         Vector3 direction = sightBehavior.playerReference.transform.position - transform.position;
         Quaternion rotation = Quaternion.LookRotation(direction);
-        transform.rotation = rotation;
+        //transform.rotation = rotation;
+        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * 10);
+       
+        void shootPlayer()
+        {
+              
+        }
 
-
-       //transform.LookAt(sightBehavior.playerReference.transform);
-            
-        
     }
+
+
+
+
     /*------------------------------------------------------------*   Functions   *---------------------------------------------------------------*/
 
     public Vector3 TargetPosition
@@ -240,7 +243,7 @@ public class NPC_behavior_StateMachine : MonoBehaviour
     }
     public void shootplayer()
     {
-        Ray ray;
+       // Ray ray;
 
        // Physics.Raycast(this);
     }

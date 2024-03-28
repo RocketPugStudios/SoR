@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Burst.CompilerServices;
 using UnityEngine;
 
-public class enemyWeapon : MonoBehaviour
+public class enemyWeapon:MonoBehaviour
 {
     [Header("Relationships")]
     [SerializeField] public NPC_behavior_StateMachine NPC;
@@ -20,25 +20,22 @@ public class enemyWeapon : MonoBehaviour
     [SerializeField] public float raycastDistance;
     [SerializeField] public float rateOfFire;
     [SerializeField] public RaycastHit hit;
+    [SerializeField] public Transform raycastingposition;
 
 
     private void Start()
     {
-        weapon = GetComponentInChildren<GameObject>(CompareTag("enemyWeapon"));
-
+      //  weapon = GetComponentInChildren<GameObject>(CompareTag("Raycasting Point")); 
     }
 
     public void Update()
     {
-        
-       //RaycastHit hit;
-
-        if (Physics.Raycast(weapon.transform.position, transform.forward, out hit, raycastDistance))
+      
+        if (Physics.Raycast(weapon.transform.position, weapon.transform.forward, out hit, raycastDistance))
         {
-            //Debug.Log("hitting");
+            Debug.Log("hitting");
             Debug.DrawLine(transform.position, hit.point, Color.red);
-        }
-        
+        }   
     }
 
     public void shootPlayer()

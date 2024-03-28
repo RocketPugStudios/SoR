@@ -1947,9 +1947,24 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4775192120948469530, guid: 4790cd130e245cf4d9ac5e5a26bdff2b,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 5870475027754941502, guid: 4790cd130e245cf4d9ac5e5a26bdff2b,
         type: 3}
       propertyPath: m_Name
+      value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 5870475027754941502, guid: 4790cd130e245cf4d9ac5e5a26bdff2b,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5870475027754941502, guid: 4790cd130e245cf4d9ac5e5a26bdff2b,
+        type: 3}
+      propertyPath: m_TagString
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 9155065103619356413, guid: 4790cd130e245cf4d9ac5e5a26bdff2b,
@@ -2088,7 +2103,7 @@ PrefabInstance:
     - target: {fileID: 7756668946158768185, guid: b616777453bc86240aae91d11f39cc58,
         type: 3}
       propertyPath: orthographic size
-      value: 10
+      value: 4.48
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2927,7 +2942,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &1936321071
 BoxCollider:
   m_ObjectHideFlags: 0
