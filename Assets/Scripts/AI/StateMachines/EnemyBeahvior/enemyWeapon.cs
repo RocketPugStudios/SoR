@@ -9,32 +9,29 @@ public class enemyWeapon:MonoBehaviour
     [SerializeField] public NPC_behavior_StateMachine NPC;
 
     [Header("Weapon Settings")]
-    [SerializeField] public int round;
-    [SerializeField] public int roundsinWeapon;
-    [SerializeField] public int magazineSize;
     [SerializeField] public GameObject weapon;
-    [SerializeField] public float weaponRecoil;
-    [SerializeField] public float weaponDamage;
-    //public RaycastHit hit;
-   
     [SerializeField] public float raycastDistance;
-    [SerializeField] public float rateOfFire;
     [SerializeField] public RaycastHit hit;
-    [SerializeField] public Transform raycastingposition;
+    [SerializeField] public GameObject weaponRaycast;
 
 
     private void Start()
     {
-      //  weapon = GetComponentInChildren<GameObject>(CompareTag("Raycasting Point")); 
+       // weapon = this.gameObject;
+        weaponRaycast = FindObjectOfType<GameObject>(CompareTag("Raycasting Point"));
+        if (weaponRaycast != null)
+        {
+
+        }
     }
 
     public void Update()
     {
       
-        if (Physics.Raycast(weapon.transform.position, weapon.transform.forward, out hit, raycastDistance))
+        if (Physics.Raycast(weaponRaycast.transform.position, weaponRaycast.transform.forward, out hit, raycastDistance))
         {
             Debug.Log("hitting");
-            Debug.DrawLine(transform.position, hit.point, Color.red);
+            Debug.DrawLine(weaponRaycast.transform.position, hit.point, Color.red);
         }   
     }
 
