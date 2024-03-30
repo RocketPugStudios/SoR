@@ -7,39 +7,45 @@ public class enemyWeapon:MonoBehaviour
 {
     [Header("Relationships")]
     [SerializeField] public NPC_behavior_StateMachine NPC;
-
     [Header("Weapon Settings")]
     [SerializeField] public GameObject weapon;
     [SerializeField] public float raycastDistance;
-    [SerializeField] public RaycastHit hit;
-    [SerializeField] public GameObject weaponRaycast;
-
+    
+    [SerializeField] public Transform weaponRaycast;
+    [Header("Sound")]
+    [SerializeField] public AudioSource singleFireSound;
+    [SerializeField] public AudioSource BurstFireSound;
 
     private void Start()
     {
-       // weapon = this.gameObject;
-        weaponRaycast = FindObjectOfType<GameObject>(CompareTag("Raycasting Point"));
-        if (weaponRaycast != null)
+      
+        foreach (Transform child in transform)
         {
-
-        }
+            Debug.Log(child);
+            if (child.CompareTag("Raycasting Point"))
+            {
+                weaponRaycast = child;
+            }
+        }   
     }
-
     public void Update()
     {
-      
-        if (Physics.Raycast(weaponRaycast.transform.position, weaponRaycast.transform.forward, out hit, raycastDistance))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            Debug.Log("hitting");
-            Debug.DrawLine(weaponRaycast.transform.position, hit.point, Color.red);
-        }   
+            shootPlayer();
+        }
+       
     }
 
     public void shootPlayer()
     {
-        if (hit.collider.CompareTag("Player"))
+        RaycastHit hit;
+
+        if (Physics.Raycast(weaponRaycast.transform.position, weaponRaycast.transform.forward, out hit, raycastDistance))
         {
-            Debug.Log("hitplayer");
+            Debug.Log("hitting");
+            singleFireSound.Play();
+            Debug.DrawLine(weaponRaycast.transform.position, hit.point, Color.red);
         }
     }
    
