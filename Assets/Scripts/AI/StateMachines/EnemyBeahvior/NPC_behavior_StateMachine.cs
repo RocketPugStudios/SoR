@@ -20,9 +20,9 @@ public class NPC_behavior_StateMachine : MonoBehaviour
     }
 
     /*-------------------------------------------*   VALUES   *--------------------------------*/
-    [Header("Behavior Relationships")]
+    [Header("Relationships")]
     [SerializeField] public NPC_Behavior_Sight sightBehavior;
-    //[SerializeField] public 
+    [SerializeField] public enemyWeapon weaponScript;
 
     [Header("Patrol Behavior Settings")]
     public NPCState currentState = NPCState.Idle;
@@ -39,6 +39,8 @@ public class NPC_behavior_StateMachine : MonoBehaviour
     private Transform getPlayerPosition;
     private bool isNavigatingTowardsPlayer = false;
     private Vector3 targetPosition;
+    private float shotTimer = 1;
+
     private void Awake()
     {
         sightBehavior = GetComponent<NPC_Behavior_Sight>();
@@ -46,6 +48,8 @@ public class NPC_behavior_StateMachine : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
 
         PatrolNodes[0].transform.parent.SetParent(null);
+        weaponScript = GetComponentInChildren<enemyWeapon>();
+
         //PatrolNodes[0].transform.parent.gameObject.hideFlags = HideFlags.HideInHierarchy;
         
     }
@@ -142,15 +146,16 @@ public class NPC_behavior_StateMachine : MonoBehaviour
 
    void CombatState()
     {
+        Debug.Log("shooting player");
         Vector3 direction = sightBehavior.playerReference.transform.position - transform.position;
         Quaternion rotation = Quaternion.LookRotation(direction);
         //transform.rotation = rotation;
         transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * 10);
+        Debug.Log("shooting player");
+        shootPlayer();
+        
+
        
-        void shootPlayer()
-        {
-              
-        }
 
     }
 
@@ -218,6 +223,7 @@ public class NPC_behavior_StateMachine : MonoBehaviour
       if (sightBehavior.canSeePlayer && currentState != NPCState.Investigate)
         {
             Debug.Log("player seen");
+            if (currentState == NPCState.Combat) { return; }
             currentState = NPCState.Investigate;
         }
     }
@@ -241,13 +247,33 @@ public class NPC_behavior_StateMachine : MonoBehaviour
            
         }
     }
-    public void shootplayer()
+  
+    public void shootPlayer()
     {
-       // Ray ray;
 
-       // Physics.Raycast(this);
+        
+        float countDown = shotTimer -= Time.deltaTime;
+        
+
+
+
+        Debug.Log(countDown);
+        if (countDown <= 0f)
+        {
+           
+
+           
+            weaponScript.shootWeapon();
+            shotTimer = 1f;
+            
+        }
+
+        void countdown(float _startingTime, float _currentTime)
+        {
+           
+        }
+        
     }
-
     /*------------------------------------------*   getters & setters   *-----------------------------------------*/
     /*
     public Queue<Transform> PatrolPointsQueue
