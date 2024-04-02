@@ -12,6 +12,7 @@ public class enemyWeapon:MonoBehaviour
     [SerializeField] public GameObject weapon;
     [SerializeField] public float raycastDistance;
     
+    
     [SerializeField] public Transform weaponRaycast;
     [Header("Sound")]
     [SerializeField] public AudioClip gunshot;

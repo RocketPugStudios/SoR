@@ -39,7 +39,7 @@ public class NPC_behavior_StateMachine : MonoBehaviour
     private Transform getPlayerPosition;
     private bool isNavigatingTowardsPlayer = false;
     private Vector3 targetPosition;
-    private float shotTimer = 1;
+    private float shotTimer = 0.5f;
 
     private void Awake()
     {
@@ -250,26 +250,32 @@ public class NPC_behavior_StateMachine : MonoBehaviour
   
     public void shootPlayer()
     {
-
+        countdown(5f);
+        int rounds = 5;
         
-        float countDown = shotTimer -= Time.deltaTime;
-        
-
-
-
-        Debug.Log(countDown);
-        if (countDown <= 0f)
+        for ( int i = 0; i <= rounds ; i++)
         {
-           
-
-           
-            weaponScript.shootWeapon();
-            shotTimer = 1f;
+            countdown(1f);
+            Debug.Log("bang");
             
+            weaponScript.shootWeapon();
         }
+       
 
-        void countdown(float _startingTime, float _currentTime)
+
+
+        
+        
+
+        void countdown(float num)
         {
+
+             
+
+           while (num >= 0)
+            {
+                num -= Time.deltaTime;
+            }
            
         }
         
