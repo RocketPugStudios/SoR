@@ -40,7 +40,7 @@ public class enemyWeapon:MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             shootWeapon();
-        } 
+        }
     }
 
     public void shootWeapon()

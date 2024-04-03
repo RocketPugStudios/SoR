@@ -36,10 +36,13 @@ public class NPC_behavior_StateMachine : MonoBehaviour
     [SerializeField] public float counter;
     [SerializeField] public int setTimer;
     [SerializeField] public bool threatSpotted;
+
     private Transform getPlayerPosition;
     private bool isNavigatingTowardsPlayer = false;
     private Vector3 targetPosition;
     private float shotTimer = 0.5f;
+
+    private Coroutine coroutine;
 
     private void Awake()
     {
@@ -62,8 +65,6 @@ public class NPC_behavior_StateMachine : MonoBehaviour
             PatrolNodes.Reverse();
             patrolNodeIndex = 0;
         }
-
-
         setTargetPosition();
           /*---------------------------*   States   *-----------------------------------------------------------------*/
         switch (currentState)
@@ -146,17 +147,17 @@ public class NPC_behavior_StateMachine : MonoBehaviour
 
    void CombatState()
     {
-        Debug.Log("shooting player");
+        
         Vector3 direction = sightBehavior.playerReference.transform.position - transform.position;
         Quaternion rotation = Quaternion.LookRotation(direction);
         //transform.rotation = rotation;
         transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * 10);
-        Debug.Log("shooting player");
-        shootPlayer();
+        // Debug.Log("shooting player");
+        if (coroutine == null)
+        {
+          coroutine = StartCoroutine(shootPlayer());
+        }
         
-
-       
-
     }
 
 
@@ -235,50 +236,28 @@ public class NPC_behavior_StateMachine : MonoBehaviour
 
     public void ThreatSpotted()
     {
-    
         while (sightBehavior.canSeePlayer)
         {
 
             if (distance <=  5f)
             {
 
-            }
-
-           
+            }      
         }
     }
   
-    public void shootPlayer()
+    IEnumerator shootPlayer()
     {
-        countdown(5f);
+        yield return new WaitForSeconds(2f);
         int rounds = 5;
-        
         for ( int i = 0; i <= rounds ; i++)
         {
-            countdown(1f);
-            Debug.Log("bang");
-            
+            yield return new WaitForSeconds(0.1f);
+            Debug.Log("bang");   
             weaponScript.shootWeapon();
         }
-       
+        coroutine = null; 
 
-
-
-        
-        
-
-        void countdown(float num)
-        {
-
-             
-
-           while (num >= 0)
-            {
-                num -= Time.deltaTime;
-            }
-           
-        }
-        
     }
     /*------------------------------------------*   getters & setters   *-----------------------------------------*/
     /*
