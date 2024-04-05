@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.Burst.CompilerServices;
 using UnityEngine;
 using UnityEngine.ProBuilder;
@@ -20,6 +21,7 @@ public class enemyWeapon:MonoBehaviour
     [Header("Particle Effects")]
     [SerializeField] public ParticleSystem wallgunshot;
     [SerializeField] public ParticleSystem muzzleFlash;
+    [SerializeField] public ParticleSystem playergunshot;
 
 
 
@@ -57,7 +59,7 @@ public class enemyWeapon:MonoBehaviour
         }
     }
 
-    void PlaySound()
+   private void PlaySound()
     {
         // Create a new GameObject
         GameObject soundObject = new GameObject("Sound");
@@ -71,16 +73,33 @@ public class enemyWeapon:MonoBehaviour
         Destroy(soundObject, gunshot.length);
     }
 
-    void gunShotParticle(Vector3 hitObject, Vector3 normal)
+   private void gunShotParticle(Vector3 hitObject, Vector3 normal)
     {
-        Instantiate(wallgunshot,hitObject,Quaternion.LookRotation(normal));
+        //Instantiate(wallgunshot,hitObject,Quaternion.LookRotation(normal));
+        void pickParticleEffect()
+        {
+
+
+          //  hitObject
+
+
+            
+        }
+            
+        
+
+        
     }
 
-    void muzzleFlashPoint(Vector3 weaponPoint)
+    private void muzzleFlashPoint(Vector3 weaponPoint)
     {
         ParticleSystem _muzzleflash = Instantiate(muzzleFlash, weaponPoint, Quaternion.LookRotation(Vector3.back));
         
         Destroy (_muzzleflash.gameObject, _muzzleflash.main.duration + _muzzleflash.main.startLifetime.constantMax);
     }
 
+    private void ballisticParticles(ParticleSystem _particle)
+    {
+        
+    }
 }

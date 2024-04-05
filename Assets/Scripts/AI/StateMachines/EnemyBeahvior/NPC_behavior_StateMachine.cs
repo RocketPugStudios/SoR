@@ -145,21 +145,22 @@ public class NPC_behavior_StateMachine : MonoBehaviour
         }
     }
 
-   void CombatState()
+    void CombatState()
     {
-        
+
+        bool _canseeplayer = sightBehavior.canSeePlayer;
+
+
         Vector3 direction = sightBehavior.playerReference.transform.position - transform.position;
         Quaternion rotation = Quaternion.LookRotation(direction);
         //transform.rotation = rotation;
         transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * 10);
         // Debug.Log("shooting player");
-        if (coroutine == null)
+        if (_canseeplayer)
         {
-          coroutine = StartCoroutine(shootPlayer());
+            if (coroutine == null) { coroutine = StartCoroutine(shootPlayer());}
         }
-        
     }
-
 
 
 
@@ -207,14 +208,12 @@ public class NPC_behavior_StateMachine : MonoBehaviour
     }
 
     private void StopAgent()
-    {
-        
+    {   
         if (enemyNavQueue.Count != 0 || enemyNavQueue.Count == 0 )//if queue is empty or filled
         {
             GameObject stoppedLocation = agent.gameObject;
             enemyNavQueue.Clear();
-            enemyNavQueue.Enqueue(stoppedLocation);//add location from list at index x into queue, 
-           
+            enemyNavQueue.Enqueue(stoppedLocation);//add location from list at index x into queue,     
             targetDestination = enemyNavQueue.Dequeue().transform.position;
             agent.SetDestination(targetDestination);
         }
@@ -224,7 +223,7 @@ public class NPC_behavior_StateMachine : MonoBehaviour
       if (sightBehavior.canSeePlayer && currentState != NPCState.Investigate)
         {
             Debug.Log("player seen");
-            if (currentState == NPCState.Combat) { return; }
+            if (currentState == NPCState.Combat) {return;}
             currentState = NPCState.Investigate;
         }
     }
