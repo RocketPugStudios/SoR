@@ -54,7 +54,7 @@ public class enemyWeapon:MonoBehaviour
             Debug.Log("hitting");
             PlaySound();
             muzzleFlashPoint(weaponRaycast.position);
-            gunShotParticle(hit.point, hit.normal);
+            gunShotParticle(hit.point, hit.normal, hit.collider.gameObject);
             Debug.DrawLine(weaponRaycast.transform.position, hit.point, Color.red);
         }
     }
@@ -73,22 +73,14 @@ public class enemyWeapon:MonoBehaviour
         Destroy(soundObject, gunshot.length);
     }
 
-   private void gunShotParticle(Vector3 hitObject, Vector3 normal)
+   private void gunShotParticle(Vector3 hitPoint, Vector3 normal, GameObject hitObject)
     {
-        //Instantiate(wallgunshot,hitObject,Quaternion.LookRotation(normal));
-        void pickParticleEffect()
+        //Instantiate(wallgunshot,hitPoint,Quaternion.LookRotation(normal));
+        //void pickParticleEffect()
         {
-
-
-          //  hitObject
-
-
-            
-        }
-            
-        
-
-        
+            if (hitObject.CompareTag("Player")){Instantiate(playergunshot,hitPoint,Quaternion.LookRotation(normal));}
+           else Instantiate(wallgunshot, hitPoint, Quaternion.LookRotation(normal));
+        }     
     }
 
     private void muzzleFlashPoint(Vector3 weaponPoint)
