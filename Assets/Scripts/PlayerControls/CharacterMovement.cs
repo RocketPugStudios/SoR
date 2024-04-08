@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CharacterMovement : MonoBehaviour
 {
+   [SerializeField] public CharacterController player;
     Rigidbody rigidbody;
     public float speed = 4;
     Vector3 lookPos;
