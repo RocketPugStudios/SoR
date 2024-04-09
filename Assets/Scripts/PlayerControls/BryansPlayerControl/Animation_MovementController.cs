@@ -7,61 +7,69 @@ using UnityEngine.InputSystem;
 
 public class Animation_MovementController : MonoBehaviour
 {
-
-
-
-    Player_Xbox_Controls playerInput;
-    CharacterController characterController;
-
-    Vector2 currentMovementInput;
-    Vector3 currentMovement;
-    bool isMovementPressed;
-
-
-    // Start is called before the first frame update
+    [Header("Script Relationships")]
+    [SerializeField] Player_Xbox_Controls playerInput;
+    [SerializeField] CharacterController characterController;
+    [SerializeField] Animator animations;
+    
+    [Header("Variables")]
+    [SerializeField] private Vector2 currentMovementInput;
+    [SerializeField] private Vector3 currentMovement;
+    [SerializeField] private bool isMovementPressed;
+    [SerializeField] private float roatationFactorPerFrame = 15f;
     void Awake()
     {
         playerInput = new Player_Xbox_Controls();
         characterController = GetComponent<CharacterController>();
+        animations = GetComponent<Animator>();
 
-        playerInput.CharacterControls.Move.started += Context =>
-        {
-
-            currentMovementInput = Context.ReadValue<Vector2>();
-            currentMovement.x = currentMovementInput.x;
-            currentMovement.z = currentMovementInput.y;
-            isMovementPressed = currentMovementInput.x != 0 || currentMovementInput.y != 0;
-
-
-
-
-        };
-
-        playerInput.CharacterControls.Move.canceled += Context =>
-        {
-
-            currentMovementInput = Context.ReadValue<Vector2>();
-            currentMovement.x = currentMovementInput.x;
-            currentMovement.z = currentMovementInput.y;
-            isMovementPressed = currentMovementInput.x != 0 || currentMovementInput.y != 0;
-
-
-        };
-
-        playerInput.CharacterControls.Move.performed += Context =>
-        {
-
-            currentMovementInput = Context.ReadValue<Vector2>();
-            currentMovement.x = currentMovementInput.x;
-            currentMovement.z = currentMovementInput.y;
-            isMovementPressed = currentMovementInput.x != 0 || currentMovementInput.y != 0;
-
-
-        };
+        playerInput.CharacterControls.Move.started += OnMovementInput;
+        playerInput.CharacterControls.Move.canceled += OnMovementInput;
+        playerInput.CharacterControls.Move.performed += OnMovementInput;
+      
     }
-    // Update is called once per frame
+    void OnMovementInput(InputAction.CallbackContext context)
+    {
+        currentMovementInput = context.ReadValue<Vector2>();
+        currentMovement.x = currentMovementInput.x;
+        currentMovement.z = currentMovementInput.y;
+        isMovementPressed = currentMovementInput.x != 0 || currentMovementInput.y != 0;
+    }
+    void handleAnimation()
+    {
+        bool isWalking = animations.GetBool("isWalking");
+        bool isRunning = animations.GetBool("isRunning");
+
+        if (isMovementPressed && !isWalking)
+        {
+            animations.SetBool("isWalking", true);
+        }
+        else if (!isMovementPressed && isWalking)
+        {
+            animations.SetBool("isWalking", false);
+        }
+    }
+
+    void handleRotation()
+    {
+        Vector3 positionToLookAt;
+
+        positionToLookAt.x = currentMovement.x;
+        positionToLookAt.y = 0.0f;
+        positionToLookAt.z = currentMovement.z;
+
+        Quaternion currentRotation = transform.rotation;
+      
+        if (isMovementPressed)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(positionToLookAt);
+            transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, roatationFactorPerFrame * Time.deltaTime);
+        }
+    }
     void Update()
     {
+        handleRotation();
+        handleAnimation();
         characterController.Move(currentMovement * Time.deltaTime);
     }
     void OnEnable()
