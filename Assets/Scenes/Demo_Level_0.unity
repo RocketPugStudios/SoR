@@ -4035,6 +4035,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3705956386680640951}
+  - component: {fileID: 3705956386680640952}
   m_Layer: 6
   m_Name: Automatic_Rifle03_Yelow (CUSTOM)
   m_TagString: Untagged
@@ -8460,6 +8461,18 @@ Transform:
   m_Father: {fileID: 6752674845481880918}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: -19.279, y: -236.999, z: 91.095}
+--- !u!114 &3705956386680640952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 447623536599666798}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a48db37d58dd7574caaed64b673f7580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &3728278172265652429
 Transform:
   m_ObjectHideFlags: 0
@@ -13473,7 +13486,7 @@ MonoBehaviour:
   currentMovementInput: {x: 0, y: 0}
   currentMovement: {x: 0, y: 0, z: 0}
   isMovementPressed: 0
-  roatationFactorPerFrame: 1
+  roatationFactorPerFrame: 15
 --- !u!4 &7460079285536639053
 Transform:
   m_ObjectHideFlags: 0

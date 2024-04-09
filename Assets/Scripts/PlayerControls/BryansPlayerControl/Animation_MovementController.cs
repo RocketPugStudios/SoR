@@ -16,6 +16,7 @@ public class Animation_MovementController : MonoBehaviour
     [SerializeField] private Vector2 currentMovementInput;
     [SerializeField] private Vector3 currentMovement;
     [SerializeField] private bool isMovementPressed;
+    [SerializeField] private bool isAimPressed;
     [SerializeField] private float roatationFactorPerFrame = 15f;
     void Awake()
     {
@@ -26,7 +27,13 @@ public class Animation_MovementController : MonoBehaviour
         playerInput.CharacterControls.Move.started += OnMovementInput;
         playerInput.CharacterControls.Move.canceled += OnMovementInput;
         playerInput.CharacterControls.Move.performed += OnMovementInput;
-      
+
+        playerInput.CharacterControls.Aim.started += OnAimInput;
+        playerInput.CharacterControls.Aim.canceled += OnAimInput;
+    }
+    void OnAimInput(InputAction.CallbackContext context)
+    {
+        isAimPressed = context.ReadValueAsButton();
     }
     void OnMovementInput(InputAction.CallbackContext context)
     {
@@ -38,8 +45,9 @@ public class Animation_MovementController : MonoBehaviour
     void handleAnimation()
     {
         bool isWalking = animations.GetBool("isWalking");
-        bool isRunning = animations.GetBool("isRunning");
-
+        //bool isRunning = animations.GetBool("isRunning");
+        bool isAiming = animations.GetBool("isAiming");
+        //movement handler
         if (isMovementPressed && !isWalking)
         {
             animations.SetBool("isWalking", true);
@@ -47,6 +55,22 @@ public class Animation_MovementController : MonoBehaviour
         else if (!isMovementPressed && isWalking)
         {
             animations.SetBool("isWalking", false);
+        }
+        //Aiming Handler
+        if (isAimPressed)
+        {
+            animations.SetBool("isAiming", true);
+        }
+        else if (!isAimPressed) { animations.SetBool("isAiming", false);}
+        // Aim and walk handler
+        if (isMovementPressed && isAimPressed) {
+            animations.SetBool("isWalking", true);
+            animations.SetBool("isAiming", true);
+        }
+        else if (!isMovementPressed && !isAimPressed) 
+        {
+            animations.SetBool("isWalking", false);
+            animations.SetBool("isAiming", false);
         }
     }
 
@@ -71,6 +95,7 @@ public class Animation_MovementController : MonoBehaviour
         handleRotation();
         handleAnimation();
         characterController.Move(currentMovement * Time.deltaTime);
+       
     }
     void OnEnable()
     {
