@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Net.NetworkInformation;
 using System.Threading;
-using Unity.VisualScripting;
+
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UIElements;
@@ -247,17 +247,24 @@ public class NPC_behavior_StateMachine : MonoBehaviour
   
     IEnumerator shootPlayer()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
+
         int rounds = 5;
         for ( int i = 0; i <= rounds ; i++)
         {
             yield return new WaitForSeconds(0.1f);
             Debug.Log("bang");   
             weaponScript.shootWeapon();
+
+            if (weaponScript == null)
+            {
+                 yield return new WaitForSeconds(1f);              
+            }
+             
         }
         coroutine = null; 
-
     }
+
     /*------------------------------------------*   getters & setters   *-----------------------------------------*/
     /*
     public Queue<Transform> PatrolPointsQueue

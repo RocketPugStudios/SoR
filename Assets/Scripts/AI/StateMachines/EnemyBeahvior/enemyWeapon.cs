@@ -2,8 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.Burst.CompilerServices;
+using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.ProBuilder;
+using UnityEngineInternal;
 
 public class enemyWeapon:MonoBehaviour
 {
@@ -56,8 +58,18 @@ public class enemyWeapon:MonoBehaviour
             muzzleFlashPoint(weaponRaycast.position);
             gunShotParticle(hit.point, hit.normal, hit.collider.gameObject);
             Debug.DrawLine(weaponRaycast.transform.position, hit.point, Color.red);
+            if (hit.collider.CompareTag("Player"))
+            {
+                GameObject player = hit.collider.gameObject;
+
+                player.GetComponent<playerHealthSystem>().playerConstitution();
+
+            }
+            
         }
     }
+
+   
 
    private void PlaySound()
     {
