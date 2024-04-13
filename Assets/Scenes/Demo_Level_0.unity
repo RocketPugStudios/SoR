@@ -3336,6 +3336,16 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3268587733787373535, guid: b616777453bc86240aae91d11f39cc58,
         type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3268587733787373535, guid: b616777453bc86240aae91d11f39cc58,
+        type: 3}
+      propertyPath: rotationSpeed
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 3268587733787373535, guid: b616777453bc86240aae91d11f39cc58,
+        type: 3}
       propertyPath: playerTransform
       value: 
       objectReference: {fileID: 5221738619140307183}
@@ -3397,7 +3407,12 @@ PrefabInstance:
     - target: {fileID: 7538721877660937600, guid: b616777453bc86240aae91d11f39cc58,
         type: 3}
       propertyPath: m_Name
-      value: Main Camera (1)
+      value: Main Camera
+      objectReference: {fileID: 0}
+    - target: {fileID: 7538721877660937600, guid: b616777453bc86240aae91d11f39cc58,
+        type: 3}
+      propertyPath: m_TagString
+      value: Camera
       objectReference: {fileID: 0}
     - target: {fileID: 7756668946158768185, guid: b616777453bc86240aae91d11f39cc58,
         type: 3}
@@ -4822,6 +4837,111 @@ Transform:
   m_Father: {fileID: 441421863}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 179.296, y: 4.481003, z: 95.884}
+--- !u!1 &1505454388
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1505454389}
+  - component: {fileID: 1505454392}
+  - component: {fileID: 1505454391}
+  - component: {fileID: 1505454390}
+  m_Layer: 6
+  m_Name: weaponPosition
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1505454389
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1505454388}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.0033, y: 0.0296, z: 0.6136}
+  m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 3705956386680640951}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1505454390
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1505454388}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 0
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!23 &1505454391
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1505454388}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 257
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 73c176f402d2c2f4d929aa5da7585d17, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &1505454392
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1505454388}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &1531610696
 GameObject:
   m_ObjectHideFlags: 0
@@ -11776,6 +11896,7 @@ Transform:
   - {fileID: 8891166976415052540}
   - {fileID: 2582426975399850178}
   - {fileID: 3678174922062335962}
+  - {fileID: 1505454389}
   m_Father: {fileID: 6752674845481880918}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: -19.279, y: -236.999, z: 91.095}
@@ -11791,6 +11912,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a48db37d58dd7574caaed64b673f7580, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gunshotPosition: {fileID: 1505454388}
+  raycastDistance: 200
+  NPC: {fileID: 0}
+  weapon: {fileID: 0}
+  weaponRaycast: {fileID: 0}
+  gunshot: {fileID: 8300000, guid: d7bcb5e48f8feac46b6b68fad22c6f15, type: 3}
+  wallgunshot: {fileID: 198000011002288308, guid: beb3acff7ab73944fb8f470f24d74ed3,
+    type: 3}
+  muzzleFlash: {fileID: 198000012944515248, guid: 9defeac88977c0d448aa4541073ee9e4,
+    type: 3}
+  enemygunshot: {fileID: 198000013597187216, guid: 83e55d3418297934fab882559d009285,
+    type: 3}
 --- !u!4 &3728278172265652429
 Transform:
   m_ObjectHideFlags: 0
@@ -16475,6 +16608,7 @@ GameObject:
   - component: {fileID: 7451505758796581796}
   - component: {fileID: 7451505758796581798}
   - component: {fileID: 7451505758796581799}
+  - component: {fileID: 7451505758796581800}
   m_Layer: 6
   m_Name: Player(Custom)
   m_TagString: Player
@@ -16783,6 +16917,14 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 817c3295-bebe-4988-95ce-3e86d69069ef
     m_ActionName: Player/Aim
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: bff68c61-21bb-4393-ae31-292fcec9d9ce
+    m_ActionName: CharacterControls/RotateLeft[/Keyboard/q]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 7d51f923-2b22-4000-bc41-a34bc097defa
+    m_ActionName: CharacterControls/RotateRight[/Keyboard/e]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: CharacterControls
@@ -16802,11 +16944,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterController: {fileID: 0}
   animations: {fileID: 0}
+  playerCamera: {fileID: 0}
   currentMovementInput: {x: 0, y: 0}
   currentMovement: {x: 0, y: 0, z: 0}
   isMovementPressed: 0
   isAimPressed: 0
-  roatationFactorPerFrame: 15
+  isShootPressed: 0
+  rotationFactorPerFrame: 15
+  rotationSpeed: 5
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 8
+  target: {x: 0, y: 0, z: 0}
 --- !u!114 &7451505758796581799
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16822,6 +16971,21 @@ MonoBehaviour:
   health: 0
   animations: {fileID: 0}
   isPlayerDead: 0
+--- !u!114 &7451505758796581800
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7325394308835826354}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a7626be90b4778499244847c3ee021c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!4 &7460079285536639053
 Transform:
   m_ObjectHideFlags: 0

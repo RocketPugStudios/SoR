@@ -1,7 +1,7 @@
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
-
-
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -11,17 +11,30 @@ public class Animation_MovementController : MonoBehaviour
     [SerializeField] Player_Xbox_Controls playerInput;
     [SerializeField] CharacterController characterController;
     [SerializeField] Animator animations;
-    
+    [SerializeField] Camera playerCamera;  // Reference to the Camera
+     playerWeaponPosition primaryWeapon;  
+
     [Header("Variables")]
     [SerializeField] private Vector2 currentMovementInput;
     [SerializeField] private Vector3 currentMovement;
     [SerializeField] private bool isMovementPressed;
     [SerializeField] private bool isAimPressed;
-    [SerializeField] private float roatationFactorPerFrame = 15f;
+    [SerializeField] private bool isShootPressed;
+    [SerializeField] private float rotationFactorPerFrame = 15f;
+    [SerializeField] private float rotationSpeed = 5f;
+    [SerializeField] private LayerMask groundMask;
+    [SerializeField] private Vector3 target;
+
+
+
+
     void Awake()
     {
         playerInput = new Player_Xbox_Controls();
         characterController = GetComponent<CharacterController>();
+        primaryWeapon = GetComponentInChildren<playerWeaponPosition>();
+
+        searchForCamera();
         animations = GetComponent<Animator>();
 
         playerInput.CharacterControls.Move.started += OnMovementInput;
@@ -30,77 +43,149 @@ public class Animation_MovementController : MonoBehaviour
 
         playerInput.CharacterControls.Aim.started += OnAimInput;
         playerInput.CharacterControls.Aim.canceled += OnAimInput;
+
+        playerInput.CharacterControls.Shoot.started += OnShootInput;
+        playerInput.CharacterControls.Shoot.canceled += OnShootInput;
+
     }
+
+     void HandleFireWeapon()
+    {
+        if (isShootPressed && isAimPressed)
+        {
+            Debug.Log("calling gunshot");
+            primaryWeapon.GunShot(target);
+        }
+    }
+
+    void OnShootInput(InputAction.CallbackContext context)
+    {
+        isShootPressed = context.ReadValueAsButton();
+    }
+    void searchForCamera()
+    {
+        if (playerCamera == null)
+        {
+            Debug.Log("finding camera");
+            foreach (GameObject cam in FindObjectsOfType<GameObject>())
+            {
+                Debug.Log(cam);
+                if (cam.CompareTag("Camera"))
+                {
+                    Debug.Log("Camera found");
+                    playerCamera = cam.GetComponent<Camera>();
+                    break;
+                }
+            }
+        }
+
+    }
+
     void OnAimInput(InputAction.CallbackContext context)
     {
         isAimPressed = context.ReadValueAsButton();
+       
     }
+
+    void Aim()
+    {
+        if (isAimPressed)
+        {
+
+            var (success, position) = GetMousePosition();
+
+            if (success)
+            {
+                var direction = position - transform.position;
+                direction.y = 0;  // Ensure there's no vertical rotation.
+                transform.forward = direction.normalized;
+            }
+
+
+            (bool success, Vector3 position) GetMousePosition()
+            {
+                var ray = playerCamera.ScreenPointToRay(Input.mousePosition);
+               
+
+                if (Physics.Raycast(ray, out var hitInfo, Mathf.Infinity, groundMask))
+                {
+                    target = hitInfo.point;
+                    
+                    // The Raycast hit something, return with the position.
+                    return (success: true, position: hitInfo.point);
+                    
+                }
+                else
+                {
+                    // The Raycast did not hit anything.
+                    return (success: false, position: Vector3.zero);
+                }
+            }
+        }
+    }
+
     void OnMovementInput(InputAction.CallbackContext context)
     {
         currentMovementInput = context.ReadValue<Vector2>();
-        currentMovement.x = currentMovementInput.x;
-        currentMovement.z = currentMovementInput.y;
         isMovementPressed = currentMovementInput.x != 0 || currentMovementInput.y != 0;
+        UpdateMovement();
     }
-    void handleAnimation()
+
+    void UpdateMovement()
     {
-        bool isWalking = animations.GetBool("isWalking");
-        //bool isRunning = animations.GetBool("isRunning");
-        bool isAiming = animations.GetBool("isAiming");
-        //movement handler
-        if (isMovementPressed && !isWalking)
-        {
-            animations.SetBool("isWalking", true);
-        }
-        else if (!isMovementPressed && isWalking)
-        {
-            animations.SetBool("isWalking", false);
-        }
-        //Aiming Handler
+        Vector3 forward = playerCamera.transform.forward;
+        Vector3 right = playerCamera.transform.right;
+        forward.y = 0;
+        right.y = 0;
+        forward.Normalize();
+        right.Normalize();
+
         if (isAimPressed)
         {
-            animations.SetBool("isAiming", true);
+            // Combine forward and lateral movement
+            currentMovement = (forward * currentMovementInput.y + right * currentMovementInput.x).normalized;
         }
-        else if (!isAimPressed) { animations.SetBool("isAiming", false);}
-        // Aim and walk handler
-        if (isMovementPressed && isAimPressed) {
-            animations.SetBool("isWalking", true);
-            animations.SetBool("isAiming", true);
-        }
-        else if (!isMovementPressed && !isAimPressed) 
+        else
         {
-            animations.SetBool("isWalking", false);
-            animations.SetBool("isAiming", false);
+            // Regular movement in all directions
+            currentMovement = (forward * currentMovementInput.y + right * currentMovementInput.x).normalized;
         }
     }
 
-    void handleRotation()
+
+
+    void HandleAnimation()
     {
-        Vector3 positionToLookAt;
+        bool isWalking = isMovementPressed && !isAimPressed;
+        bool isAiming = isAimPressed;
 
-        positionToLookAt.x = currentMovement.x;
-        positionToLookAt.y = 0.0f;
-        positionToLookAt.z = currentMovement.z;
+        animations.SetBool("isWalking", isWalking);
+        animations.SetBool("isAiming", isAiming);
+    }
 
-        Quaternion currentRotation = transform.rotation;
-      
-        if (isMovementPressed)
+    void HandleRotation()
+    {
+        if (isMovementPressed && !isAimPressed)
         {
-            Quaternion targetRotation = Quaternion.LookRotation(positionToLookAt);
-            transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, roatationFactorPerFrame * Time.deltaTime);
+            Quaternion targetRotation = Quaternion.LookRotation(currentMovement);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationFactorPerFrame * Time.deltaTime);
         }
     }
+
     void Update()
     {
-        handleRotation();
-        handleAnimation();
+        HandleRotation();
+        HandleAnimation();
+        Aim();
+        HandleFireWeapon();
         characterController.Move(currentMovement * Time.deltaTime);
-       
     }
+
     void OnEnable()
     {
         playerInput.CharacterControls.Enable();
     }
+
     void OnDisable()
     {
         playerInput.CharacterControls.Disable();

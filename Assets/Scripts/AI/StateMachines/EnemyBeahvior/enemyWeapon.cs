@@ -41,10 +41,12 @@ public class enemyWeapon:MonoBehaviour
     }
     public void Update()
     {
+        /*
         if (Input.GetKeyDown(KeyCode.Space))
         {
             shootWeapon();
         }
+        */
     }
 
     public void shootWeapon()
@@ -102,8 +104,5 @@ public class enemyWeapon:MonoBehaviour
         Destroy (_muzzleflash.gameObject, _muzzleflash.main.duration + _muzzleflash.main.startLifetime.constantMax);
     }
 
-    private void ballisticParticles(ParticleSystem _particle)
-    {
-        
-    }
+  
 }

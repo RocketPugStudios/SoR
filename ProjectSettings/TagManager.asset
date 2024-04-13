@@ -8,6 +8,7 @@ TagManager:
   - PatrolNodeParent
   - enemyWeapon
   - Raycasting Point
+  - Camera
   layers:
   - Default
   - TransparentFX

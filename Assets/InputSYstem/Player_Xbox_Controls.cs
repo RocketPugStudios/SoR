@@ -53,6 +53,24 @@ public partial class @Player_Xbox_Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RotateLeft"",
+                    ""type"": ""Button"",
+                    ""id"": ""bff68c61-21bb-4393-ae31-292fcec9d9ce"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RotateRight"",
+                    ""type"": ""Button"",
+                    ""id"": ""7d51f923-2b22-4000-bc41-a34bc097defa"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -165,6 +183,28 @@ public partial class @Player_Xbox_Controls: IInputActionCollection2, IDisposable
                     ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6a868d46-52d0-40e9-a8b5-3e7ac0e88652"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RotateLeft"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4427d2d7-bf1e-47cd-a013-ac9b5d7f90f5"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RotateRight"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -176,6 +216,8 @@ public partial class @Player_Xbox_Controls: IInputActionCollection2, IDisposable
         m_CharacterControls_Shoot = m_CharacterControls.FindAction("Shoot", throwIfNotFound: true);
         m_CharacterControls_Move = m_CharacterControls.FindAction("Move", throwIfNotFound: true);
         m_CharacterControls_Aim = m_CharacterControls.FindAction("Aim", throwIfNotFound: true);
+        m_CharacterControls_RotateLeft = m_CharacterControls.FindAction("RotateLeft", throwIfNotFound: true);
+        m_CharacterControls_RotateRight = m_CharacterControls.FindAction("RotateRight", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -240,6 +282,8 @@ public partial class @Player_Xbox_Controls: IInputActionCollection2, IDisposable
     private readonly InputAction m_CharacterControls_Shoot;
     private readonly InputAction m_CharacterControls_Move;
     private readonly InputAction m_CharacterControls_Aim;
+    private readonly InputAction m_CharacterControls_RotateLeft;
+    private readonly InputAction m_CharacterControls_RotateRight;
     public struct CharacterControlsActions
     {
         private @Player_Xbox_Controls m_Wrapper;
@@ -247,6 +291,8 @@ public partial class @Player_Xbox_Controls: IInputActionCollection2, IDisposable
         public InputAction @Shoot => m_Wrapper.m_CharacterControls_Shoot;
         public InputAction @Move => m_Wrapper.m_CharacterControls_Move;
         public InputAction @Aim => m_Wrapper.m_CharacterControls_Aim;
+        public InputAction @RotateLeft => m_Wrapper.m_CharacterControls_RotateLeft;
+        public InputAction @RotateRight => m_Wrapper.m_CharacterControls_RotateRight;
         public InputActionMap Get() { return m_Wrapper.m_CharacterControls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -265,6 +311,12 @@ public partial class @Player_Xbox_Controls: IInputActionCollection2, IDisposable
             @Aim.started += instance.OnAim;
             @Aim.performed += instance.OnAim;
             @Aim.canceled += instance.OnAim;
+            @RotateLeft.started += instance.OnRotateLeft;
+            @RotateLeft.performed += instance.OnRotateLeft;
+            @RotateLeft.canceled += instance.OnRotateLeft;
+            @RotateRight.started += instance.OnRotateRight;
+            @RotateRight.performed += instance.OnRotateRight;
+            @RotateRight.canceled += instance.OnRotateRight;
         }
 
         private void UnregisterCallbacks(ICharacterControlsActions instance)
@@ -278,6 +330,12 @@ public partial class @Player_Xbox_Controls: IInputActionCollection2, IDisposable
             @Aim.started -= instance.OnAim;
             @Aim.performed -= instance.OnAim;
             @Aim.canceled -= instance.OnAim;
+            @RotateLeft.started -= instance.OnRotateLeft;
+            @RotateLeft.performed -= instance.OnRotateLeft;
+            @RotateLeft.canceled -= instance.OnRotateLeft;
+            @RotateRight.started -= instance.OnRotateRight;
+            @RotateRight.performed -= instance.OnRotateRight;
+            @RotateRight.canceled -= instance.OnRotateRight;
         }
 
         public void RemoveCallbacks(ICharacterControlsActions instance)
@@ -300,5 +358,7 @@ public partial class @Player_Xbox_Controls: IInputActionCollection2, IDisposable
         void OnShoot(InputAction.CallbackContext context);
         void OnMove(InputAction.CallbackContext context);
         void OnAim(InputAction.CallbackContext context);
+        void OnRotateLeft(InputAction.CallbackContext context);
+        void OnRotateRight(InputAction.CallbackContext context);
     }
 }
