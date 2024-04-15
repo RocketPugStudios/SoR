@@ -1,4 +1,5 @@
 using JetBrains.Annotations;
+using MoreMountains.Feedbacks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
@@ -13,7 +14,8 @@ public class Animation_MovementController : MonoBehaviour
     [SerializeField] CharacterController characterController;
     [SerializeField] Animator animations;
     [SerializeField] Camera playerCamera;  // Reference to the Camera
-     playerWeaponPosition primaryWeapon;  
+     playerWeaponPosition primaryWeapon;
+    [SerializeField] MMF_Player MMFfeedback; // Reference to the Camera
 
     [Header("Variables")]
     [SerializeField] private Vector2 currentMovementInput;
@@ -53,9 +55,11 @@ public class Animation_MovementController : MonoBehaviour
 
      void HandleFireWeapon()
     {
+        
         // Check if the shoot button was pressed and the aim button is also pressed
         if (isShootPressed && isAimPressed)
         {
+            MMFfeedback.PlayFeedbacks();
             Debug.Log("calling gunshot");
             primaryWeapon.GunShot(target);
             // Reset isShootPressed to false to ensure it only fires once per button press
