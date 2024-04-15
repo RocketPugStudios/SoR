@@ -6,17 +6,13 @@ public class playerWeaponPosition : MonoBehaviour
 {
     [SerializeField] GameObject gunshotPosition;
     [SerializeField] float raycastDistance;
-   
-     Animation_MovementController movementController;
 
+    Animation_MovementController movementController;
 
     [Header("Relationships")]
     [SerializeField] public GameObject player;
 
     [Header("Weapon Settings")]
-    
-
-    [Header("Sound")]
     [SerializeField] AudioClip gunshot;
 
     [Header("Particle Effects")]
@@ -31,49 +27,51 @@ public class playerWeaponPosition : MonoBehaviour
 
     public void GunShot(Vector3 target)
     {
-        Debug.Log("SHot weapon");
+        Debug.Log("Shot weapon");
+
         RaycastHit hit;
+        Vector3 gunshotWorldPosition = gunshotPosition.transform.position;
 
+        // Calculate direction from gunshot position to target in world space
+        Vector3 directionToTarget = (target - gunshotWorldPosition).normalized;
 
-        Vector3 directionToTarget = (target - transform.position).normalized;
-
-        if (Physics.Raycast(gunshotPosition.transform.position, directionToTarget,out hit, raycastDistance)) 
+        // Perform raycast in world space
+        if (Physics.Raycast(gunshotWorldPosition, directionToTarget, out hit, raycastDistance))
         {
-            Debug.Log("hit" + hit.transform);
+            Debug.Log("Hit: " + hit.transform.name);
+
             PlaySound();
-            muzzleFlashPoint(gunshotPosition.transform.position);
+            muzzleFlashPoint(gunshotWorldPosition);
             gunShotParticle(hit.point, hit.normal, hit.collider.gameObject);
+            Debug.DrawLine(gunshotWorldPosition, hit.point, Color.red);
+
+            if (hit.collider.CompareTag("Enemy"))
+            {
+                hit.collider.gameObject.GetComponent<enemyHealth>().OnHitByPlayer();
+            }
         }
     }
 
     private void PlaySound()
     {
-        // Create a new GameObject
-        GameObject soundObject = new GameObject("Sound");
-        // Add an AudioSource component dynamically and configure it
-        AudioSource audioSource = soundObject.AddComponent<AudioSource>();
-        audioSource.clip = gunshot;
-
-        audioSource.Play();
-
-        // Destroy the GameObject after the clip has finished playing
-        Destroy(soundObject, gunshot.length);
+        AudioSource.PlayClipAtPoint(gunshot, transform.position);
     }
 
     private void gunShotParticle(Vector3 hitPoint, Vector3 normal, GameObject hitObject)
     {
-        //Instantiate(wallgunshot,hitPoint,Quaternion.LookRotation(normal));
-        //void pickParticleEffect()
+        if (hitObject.CompareTag("Enemy"))
         {
-            if (hitObject.CompareTag("Enemy")) { Instantiate(enemygunshot, hitPoint, Quaternion.LookRotation(normal)); }
-            else Instantiate(wallgunshot, hitPoint, Quaternion.LookRotation(normal));
+            Instantiate(enemygunshot, hitPoint, Quaternion.LookRotation(normal));
+        }
+        else
+        {
+            Instantiate(wallgunshot, hitPoint, Quaternion.LookRotation(normal));
         }
     }
 
     private void muzzleFlashPoint(Vector3 weaponPoint)
     {
         ParticleSystem _muzzleflash = Instantiate(muzzleFlash, weaponPoint, Quaternion.LookRotation(Vector3.back));
-
         Destroy(_muzzleflash.gameObject, _muzzleflash.main.duration + _muzzleflash.main.startLifetime.constantMax);
     }
 }

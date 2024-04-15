@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Interactions;
 
 public class Animation_MovementController : MonoBehaviour
 {
@@ -45,22 +46,35 @@ public class Animation_MovementController : MonoBehaviour
         playerInput.CharacterControls.Aim.canceled += OnAimInput;
 
         playerInput.CharacterControls.Shoot.started += OnShootInput;
+        playerInput.CharacterControls.Shoot.performed += OnShootInput;
         playerInput.CharacterControls.Shoot.canceled += OnShootInput;
 
     }
 
      void HandleFireWeapon()
     {
+        // Check if the shoot button was pressed and the aim button is also pressed
         if (isShootPressed && isAimPressed)
         {
             Debug.Log("calling gunshot");
             primaryWeapon.GunShot(target);
+            // Reset isShootPressed to false to ensure it only fires once per button press
+            isShootPressed = false;
         }
     }
 
     void OnShootInput(InputAction.CallbackContext context)
     {
-        isShootPressed = context.ReadValueAsButton();
+
+        if (context.started)
+        {
+            isShootPressed = true;
+        }
+        // Optionally handle the button release if needed for other logic
+        if (context.canceled)
+        {
+            isShootPressed = false;
+        }
     }
     void searchForCamera()
     {
