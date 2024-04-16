@@ -17,15 +17,24 @@ public class CameraFollow : MonoBehaviour
             Vector3 desiredPosition = playerTransform.position + offset;
             transform.position = desiredPosition;
 
-            // Rotate the camera around the player based on mouse input
-            if (Input.GetMouseButton(1)) // Right mouse button by default, change if needed
+            // Rotate the camera around the player based on Q and E input
+            if (Input.GetKey(KeyCode.Q)) // Rotate left with Q key
             {
-                Quaternion camTurnAngle = Quaternion.AngleAxis(Input.GetAxis("Mouse X") * rotationSpeed, Vector3.up);
-                offset = camTurnAngle * offset;
+                RotateCamera(-rotationSpeed * Time.deltaTime);
+            }
+            else if (Input.GetKey(KeyCode.E)) // Rotate right with E key
+            {
+                RotateCamera(rotationSpeed * Time.deltaTime);
             }
 
             // Always look at the player
             transform.LookAt(playerTransform);
         }
+    }
+
+    void RotateCamera(float angle)
+    {
+        Quaternion camTurnAngle = Quaternion.AngleAxis(angle, Vector3.up);
+        offset = camTurnAngle * offset;
     }
 }

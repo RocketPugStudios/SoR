@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Net.NetworkInformation;
 using System.Threading;
-using Unity.VisualScripting;
+
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UIElements;
@@ -20,9 +20,9 @@ public class NPC_behavior_StateMachine : MonoBehaviour
     }
 
     /*-------------------------------------------*   VALUES   *--------------------------------*/
-    [Header("Behavior Relationships")]
+    [Header("Relationships")]
     [SerializeField] public NPC_Behavior_Sight sightBehavior;
-    //[SerializeField] public 
+    [SerializeField] public enemyWeapon weaponScript;
 
     [Header("Patrol Behavior Settings")]
     public NPCState currentState = NPCState.Idle;
@@ -36,9 +36,14 @@ public class NPC_behavior_StateMachine : MonoBehaviour
     [SerializeField] public float counter;
     [SerializeField] public int setTimer;
     [SerializeField] public bool threatSpotted;
+
     private Transform getPlayerPosition;
     private bool isNavigatingTowardsPlayer = false;
     private Vector3 targetPosition;
+    private float shotTimer = 0.5f;
+
+    private Coroutine coroutine;
+
     private void Awake()
     {
         sightBehavior = GetComponent<NPC_Behavior_Sight>();
@@ -46,6 +51,8 @@ public class NPC_behavior_StateMachine : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
 
         PatrolNodes[0].transform.parent.SetParent(null);
+        weaponScript = GetComponentInChildren<enemyWeapon>();
+
         //PatrolNodes[0].transform.parent.gameObject.hideFlags = HideFlags.HideInHierarchy;
         
     }
@@ -58,8 +65,6 @@ public class NPC_behavior_StateMachine : MonoBehaviour
             PatrolNodes.Reverse();
             patrolNodeIndex = 0;
         }
-
-
         setTargetPosition();
           /*---------------------------*   States   *-----------------------------------------------------------------*/
         switch (currentState)
@@ -140,20 +145,25 @@ public class NPC_behavior_StateMachine : MonoBehaviour
         }
     }
 
-   void CombatState()
+    void CombatState()
     {
 
+        bool _canseeplayer = sightBehavior.canSeePlayer;
 
 
         Vector3 direction = sightBehavior.playerReference.transform.position - transform.position;
         Quaternion rotation = Quaternion.LookRotation(direction);
-        transform.rotation = rotation;
-
-
-       //transform.LookAt(sightBehavior.playerReference.transform);
-            
-        
+        //transform.rotation = rotation;
+        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * 10);
+        // Debug.Log("shooting player");
+        if (_canseeplayer)
+        {
+            if (coroutine == null) { coroutine = StartCoroutine(shootPlayer());}
+        }
     }
+
+
+
     /*------------------------------------------------------------*   Functions   *---------------------------------------------------------------*/
 
     public Vector3 TargetPosition
@@ -198,14 +208,12 @@ public class NPC_behavior_StateMachine : MonoBehaviour
     }
 
     private void StopAgent()
-    {
-        
+    {   
         if (enemyNavQueue.Count != 0 || enemyNavQueue.Count == 0 )//if queue is empty or filled
         {
             GameObject stoppedLocation = agent.gameObject;
             enemyNavQueue.Clear();
-            enemyNavQueue.Enqueue(stoppedLocation);//add location from list at index x into queue, 
-           
+            enemyNavQueue.Enqueue(stoppedLocation);//add location from list at index x into queue,     
             targetDestination = enemyNavQueue.Dequeue().transform.position;
             agent.SetDestination(targetDestination);
         }
@@ -215,6 +223,7 @@ public class NPC_behavior_StateMachine : MonoBehaviour
       if (sightBehavior.canSeePlayer && currentState != NPCState.Investigate)
         {
             Debug.Log("player seen");
+            if (currentState == NPCState.Combat) {return;}
             currentState = NPCState.Investigate;
         }
     }
@@ -226,23 +235,34 @@ public class NPC_behavior_StateMachine : MonoBehaviour
 
     public void ThreatSpotted()
     {
-    
         while (sightBehavior.canSeePlayer)
         {
 
             if (distance <=  5f)
             {
 
-            }
-
-           
+            }      
         }
     }
-    public void shootplayer()
+  
+    IEnumerator shootPlayer()
     {
-        Ray ray;
+        yield return new WaitForSeconds(1f);
 
-       // Physics.Raycast(this);
+        int rounds = 5;
+        for ( int i = 0; i <= rounds ; i++)
+        {
+            yield return new WaitForSeconds(0.1f);
+            Debug.Log("bang");   
+            weaponScript.shootWeapon();
+
+            if (weaponScript == null)
+            {
+                 yield return new WaitForSeconds(1f);              
+            }
+             
+        }
+        coroutine = null; 
     }
 
     /*------------------------------------------*   getters & setters   *-----------------------------------------*/
