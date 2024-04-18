@@ -10,8 +10,9 @@ public class weaponcursor : MonoBehaviour
 
      void Start()
     {
+        /*
         cursor = new Vector2(texture.width /2 , texture.height / 2);
         Cursor.SetCursor(texture,cursor,CursorMode.Auto);
-
+        */
     }
 }
