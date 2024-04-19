@@ -7,22 +7,24 @@ public class Cutout : MonoBehaviour
     [SerializeField] private Transform targetObject; // Reference to the player object that the cutout effect will center on
 
     [SerializeField] private LayerMask wallMask; // Layer mask to filter which objects to apply the cutout effect
+    [SerializeField] private float cutoutSize;
+    [SerializeField] private float fallSize;
 
-    public Camera mainCamera; // Reference to the main camera
+    public Camera _mainCamera; // Reference to the main camera
 
     private void Awake()
     {
         // Ensure the main camera is correctly assigned, if not, attempt to find the main camera in the scene
-        if (mainCamera == null)
+        if (_mainCamera == null)
         {
-            mainCamera = Camera.main;
+            _mainCamera = Camera.main;
         }
     }
 
     private void Update()
     {
         // Convert the player's world position to a viewport point
-        Vector2 cutoutPos = mainCamera.WorldToViewportPoint(targetObject.position);
+        Vector2 cutoutPos = _mainCamera.WorldToViewportPoint(targetObject.position);
         // Adjust the Y coordinate of cutoutPos to account for different aspect ratios
         cutoutPos.y /= (Screen.width / Screen.height);
 
@@ -42,8 +44,8 @@ public class Cutout : MonoBehaviour
                 {
                     // Update the cutout position, size, and falloff parameters for the shader
                     material.SetVector("_CutoutPos", cutoutPos);
-                    material.SetFloat("_CutoutSize", 0.1f);
-                    material.SetFloat("_FalloffSize", 0.05f);
+                    material.SetFloat("_CutoutSize", cutoutSize);
+                    material.SetFloat("_FalloffSize", fallSize);
                 }
             }
         }
