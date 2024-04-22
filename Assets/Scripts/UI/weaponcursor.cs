@@ -5,10 +5,10 @@ using UnityEngine;
 public class weaponcursor : MonoBehaviour
 {
     public Vector2 cursor;
-    [SerializeField]private Texture2D texture;
+    public Texture2D texture;
 
 
-     void Start()
+     public void Start()
     {
         
         cursor = new Vector2(texture.width /2 , texture.height / 2);
