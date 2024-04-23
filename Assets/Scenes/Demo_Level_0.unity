@@ -17560,7 +17560,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: a63c8dae9593ca14680eaec05cddddb8, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_WarningMessage: 
@@ -17590,9 +17590,9 @@ CharacterController:
   m_Height: 1.64
   m_Radius: 0.19
   m_SlopeLimit: 45
-  m_StepOffset: 0.3
+  m_StepOffset: 0
   m_SkinWidth: 0.08
-  m_MinMoveDistance: 0.001
+  m_MinMoveDistance: 0
   m_Center: {x: 0, y: 0.86, z: 0}
 --- !u!114 &7451505758796581797
 MonoBehaviour:
@@ -17663,9 +17663,11 @@ MonoBehaviour:
   MMFfeedback: {fileID: 1816008555}
   currentMovementInput: {x: 0, y: 0}
   currentMovement: {x: 0, y: 0, z: 0}
+  currentRunMovement: {x: 0, y: 0, z: 0}
   isMovementPressed: 0
   isAimPressed: 0
   isShootPressed: 0
+  isAimingWhileWalkingPressed: 0
   rotationFactorPerFrame: 15
   rotationSpeed: 5
   groundMask:
