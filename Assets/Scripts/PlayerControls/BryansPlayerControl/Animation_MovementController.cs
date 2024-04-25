@@ -171,6 +171,7 @@ public class Animation_MovementController : MonoBehaviour
         currentMovementInput = context.ReadValue<Vector2>();
         isMovementPressed = currentMovementInput.x != 0 || currentMovementInput.y != 0;
         UpdateMovement();
+        animations.SetFloat("x",currentMovementInput.x == 0 ? 0 : Mathf.Sign( currentMovement.x));
     }
 
     void UpdateMovement()
@@ -202,9 +203,11 @@ public class Animation_MovementController : MonoBehaviour
         bool isAiming = isAimPressed;
         bool isAimingWhileWalking = isMovementPressed && isAimPressed;
 
+
         animations.SetBool("isWalking", isWalking);
         animations.SetBool("isAiming", isAiming);
         animations.SetBool("isAimingWhileWalking", isAimingWhileWalking);
+       
     }
 
     void HandleRotation()
