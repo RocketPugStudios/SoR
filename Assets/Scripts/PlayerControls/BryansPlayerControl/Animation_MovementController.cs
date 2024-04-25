@@ -19,15 +19,21 @@ public class Animation_MovementController : MonoBehaviour
 
     [Header("Variables")]
     [SerializeField] private Vector2 currentMovementInput;
+    //Movement
     [SerializeField] private Vector3 currentMovement;
+    [SerializeField] private Vector3 currentRunMovement;
+    //button Presses
     [SerializeField] private bool isMovementPressed;
     [SerializeField] private bool isAimPressed;
     [SerializeField] private bool isShootPressed;
+    [SerializeField] private bool isAimingWhileWalkingPressed;
+    //quaternion
     [SerializeField] private float rotationFactorPerFrame = 15f;
     [SerializeField] private float rotationSpeed = 5f;
+    //Misc
     [SerializeField] private LayerMask groundMask;
     [SerializeField] private Vector3 target;
-
+   
 
 
 
@@ -53,7 +59,25 @@ public class Animation_MovementController : MonoBehaviour
 
     }
 
-     void HandleFireWeapon()
+    void HandleGravity()
+    {
+        if (characterController.isGrounded)
+        {
+            float groundedGravity = -.05f;
+            currentMovement.y = groundedGravity;
+            currentRunMovement.y = groundedGravity;
+
+
+        }
+        else
+        {
+            float gravity = -9.8f;
+            currentMovement.y += gravity;
+            currentRunMovement.y += gravity;
+
+        }
+    }
+    void HandleFireWeapon()
     {
         
         // Check if the shoot button was pressed and the aim button is also pressed
@@ -147,6 +171,7 @@ public class Animation_MovementController : MonoBehaviour
         currentMovementInput = context.ReadValue<Vector2>();
         isMovementPressed = currentMovementInput.x != 0 || currentMovementInput.y != 0;
         UpdateMovement();
+        animations.SetFloat("x",currentMovementInput.x == 0 ? 0 : Mathf.Sign( currentMovement.x));
     }
 
     void UpdateMovement()
@@ -176,9 +201,13 @@ public class Animation_MovementController : MonoBehaviour
     {
         bool isWalking = isMovementPressed && !isAimPressed;
         bool isAiming = isAimPressed;
+        bool isAimingWhileWalking = isMovementPressed && isAimPressed;
+
 
         animations.SetBool("isWalking", isWalking);
         animations.SetBool("isAiming", isAiming);
+        animations.SetBool("isAimingWhileWalking", isAimingWhileWalking);
+       
     }
 
     void HandleRotation()
@@ -194,6 +223,7 @@ public class Animation_MovementController : MonoBehaviour
     {
         HandleRotation();
         HandleAnimation();
+       // HandleGravity();
         Aim();
         HandleFireWeapon();
         characterController.Move(currentMovement * Time.deltaTime);
