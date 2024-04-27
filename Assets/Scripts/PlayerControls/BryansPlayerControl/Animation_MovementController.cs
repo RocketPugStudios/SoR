@@ -84,7 +84,7 @@ public class Animation_MovementController : MonoBehaviour
         if (isShootPressed && isAimPressed)
         {
             MMFfeedback.PlayFeedbacks();
-            Debug.Log("calling gunshot");
+            //Debug.Log("calling gunshot");
             primaryWeapon.GunShot(target);
             // Reset isShootPressed to false to ensure it only fires once per button press
             isShootPressed = false;
@@ -108,13 +108,13 @@ public class Animation_MovementController : MonoBehaviour
     {
         if (playerCamera == null)
         {
-            Debug.Log("finding camera");
+            //Debug.Log("finding camera");
             foreach (GameObject cam in FindObjectsOfType<GameObject>())
             {
-                Debug.Log(cam);
+                //Debug.Log(cam);
                 if (cam.CompareTag("Camera"))
                 {
-                    Debug.Log("Camera found");
+                    //Debug.Log("Camera found");
                     playerCamera = cam.GetComponent<Camera>();
                     break;
                 }
@@ -170,30 +170,76 @@ public class Animation_MovementController : MonoBehaviour
     {
         currentMovementInput = context.ReadValue<Vector2>();
         isMovementPressed = currentMovementInput.x != 0 || currentMovementInput.y != 0;
-        UpdateMovement();
-        animations.SetFloat("x",currentMovementInput.x == 0 ? 0 : Mathf.Sign( currentMovement.x));
+        UpdateMovement();  // Ensure movement is updated before setting animations
+
+        // Set animation parameters based on input values
+        animations.SetFloat("x", currentMovementInput.x); // Use input directly
+        animations.SetFloat("y", currentMovementInput.y); // Use input directly
     }
 
-    void UpdateMovement()
-    {
-        Vector3 forward = playerCamera.transform.forward;
-        Vector3 right = playerCamera.transform.right;
-        forward.y = 0;
-        right.y = 0;
-        forward.Normalize();
-        right.Normalize();
 
-        if (isAimPressed)
+    Vector3 GetCursorWorldPosition()
+    {
+        Ray ray = playerCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
+        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, groundMask))
         {
-            // Combine forward and lateral movement
-            currentMovement = (forward * currentMovementInput.y + right * currentMovementInput.x).normalized;
+            return hit.point;
         }
         else
         {
-            // Regular movement in all directions
-            currentMovement = (forward * currentMovementInput.y + right * currentMovementInput.x).normalized;
+            // Optionally handle the case where the raycast doesn't hit anything
+            return transform.position; // Return current position as a fallback
         }
     }
+
+
+    void UpdateMovement()
+    {
+        if (isAimPressed)
+        {
+            // Calculate the forward and right vectors relative to the camera, ignoring any vertical movement
+            Vector3 forward = playerCamera.transform.forward;
+            Vector3 right = playerCamera.transform.right;
+            forward.y = 0;
+            right.y = 0;
+            forward.Normalize();
+            right.Normalize();
+
+            // Calculate the new forward direction based on the cursor position
+            Vector3 cursorWorldPosition = GetCursorWorldPosition();
+            Vector3 directionToCursor = (cursorWorldPosition - transform.position).normalized;
+
+            // Right vector perpendicular to the direction to the cursor
+            // This needs to be clockwise to correctly handle left-right strafing
+            Vector3 rightPerpendicular = new Vector3(directionToCursor.z, 0, -directionToCursor.x);
+
+            // Calculate the final movement direction based on cursor and input
+            currentMovement = directionToCursor * currentMovementInput.y + rightPerpendicular * currentMovementInput.x;
+        }
+        else
+        {
+            // Regular movement input
+            Vector3 forward = playerCamera.transform.forward;
+            Vector3 right = playerCamera.transform.right;
+            forward.y = 0;
+            right.y = 0;
+            forward.Normalize();
+            right.Normalize();
+
+            currentMovement = forward * currentMovementInput.y + right * currentMovementInput.x;
+        }
+
+        // Normalize the movement vector to ensure consistent movement speed
+        currentMovement.Normalize();
+    }
+
+
+
+
+
+
+
+
 
 
 
@@ -221,9 +267,10 @@ public class Animation_MovementController : MonoBehaviour
 
     void Update()
     {
+        UpdateMovement();
         HandleRotation();
         HandleAnimation();
-       // HandleGravity();
+        HandleGravity();
         Aim();
         HandleFireWeapon();
         characterController.Move(currentMovement * Time.deltaTime);

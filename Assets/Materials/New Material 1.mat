@@ -35,11 +35,8 @@ Material:
     serializedVersion: 3
     m_TexEnvs: []
     m_Ints: []
-    m_Floats:
-    - _CutoutSize: 0.1
-    - _FalloffSize: 0.05
-    m_Colors:
-    - _CutoutPos: {r: 0.53, g: 0.62, b: 0, a: 0}
+    m_Floats: []
+    m_Colors: []
   m_BuildTextureStacks: []
 --- !u!114 &3869885878711597856
 MonoBehaviour:
