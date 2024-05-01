@@ -33,7 +33,12 @@ public class Animation_MovementController : MonoBehaviour
     //Misc
     [SerializeField] private LayerMask groundMask;
     [SerializeField] private Vector3 target;
-   
+    [SerializeField] private int speedMultiplyer;
+
+    [SerializeField] private float walkSpeed = 5.0f;
+    [SerializeField] private float runSpeed = 10.0f;
+    [SerializeField] private float aimSpeed = 3.0f;
+
 
 
 
@@ -214,7 +219,7 @@ public class Animation_MovementController : MonoBehaviour
             Vector3 rightPerpendicular = new Vector3(directionToCursor.z, 0, -directionToCursor.x);
 
             // Calculate the final movement direction based on cursor and input
-            currentMovement = directionToCursor * currentMovementInput.y + rightPerpendicular * currentMovementInput.x;
+            currentMovement = (directionToCursor * currentMovementInput.y + rightPerpendicular * currentMovementInput.x) * aimSpeed; 
         }
         else
         {
@@ -226,21 +231,12 @@ public class Animation_MovementController : MonoBehaviour
             forward.Normalize();
             right.Normalize();
 
-            currentMovement = forward * currentMovementInput.y + right * currentMovementInput.x;
+            currentMovement = (forward * currentMovementInput.y + right * currentMovementInput.x) * walkSpeed; ;
         }
 
         // Normalize the movement vector to ensure consistent movement speed
         currentMovement.Normalize();
     }
-
-
-
-
-
-
-
-
-
 
 
     void HandleAnimation()
@@ -273,7 +269,8 @@ public class Animation_MovementController : MonoBehaviour
         HandleGravity();
         Aim();
         HandleFireWeapon();
-        characterController.Move(currentMovement * Time.deltaTime);
+        // characterController.Move(currentMovement * Time.deltaTime);
+        characterController.Move(currentMovement * speedMultiplyer * Time.deltaTime);  // Note the use of speedMultiplyer
     }
 
     void OnEnable()

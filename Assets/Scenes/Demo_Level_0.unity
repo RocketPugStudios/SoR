@@ -17674,6 +17674,10 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   target: {x: 0, y: 0, z: 0}
+  speedMultiplyer: 2
+  walkSpeed: 5
+  runSpeed: 10
+  aimSpeed: 3
 --- !u!114 &7451505758796581799
 MonoBehaviour:
   m_ObjectHideFlags: 0
