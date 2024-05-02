@@ -20,26 +20,66 @@ public class playerWeaponPosition : MonoBehaviour
     [SerializeField] public ParticleSystem muzzleFlash;
     [SerializeField] public ParticleSystem enemygunshot;
 
+    // Ammo and reload variables
+    private int currentAmmo;
+    private List<int> magazines = new List<int>();
+    private int currentMagazineIndex = 0;
+    public TMPro.TextMeshProUGUI ammoDisplay;
+    public TMPro.TextMeshProUGUI magazineDisplay;
+    public int magazineCapacity = 30; // Set this to your magazine capacity
+
     void Awake()
     {
         movementController = GetComponentInParent<Animation_MovementController>();
+
+        // Initialize with 3 magazines
+        for (int i = 0; i < 3; i++)
+        {
+            magazines.Add(magazineCapacity);
+        }
+        // Set currentAmmo to the first magazine's capacity at the start
+        currentAmmo = magazines[currentMagazineIndex];
+        UpdateAmmoDisplay();
+    }
+
+    void Update()
+    {
+        if (Input.GetButtonDown("Fire1") && currentAmmo > 0)
+        {
+            GunShot(Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height / 2, Camera.main.nearClipPlane)));
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            Reload();
+        }
+
+        // Example key for changing magazines, improve as needed.
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            CycleMagazines();
+        }
     }
 
     public void GunShot(Vector3 target)
     {
-        Debug.Log("Shot weapon");
+        if (currentAmmo <= 0)
+        {
+            Debug.Log("Out of Ammo!");
+            return; // Block shooting when out of ammo
+        }
 
+        currentAmmo--;
+        UpdateAmmoDisplay();
+
+        Debug.Log("Shot weapon");
         RaycastHit hit;
         Vector3 gunshotWorldPosition = gunshotPosition.transform.position;
-
-        // Calculate direction from gunshot position to target in world space
         Vector3 directionToTarget = (target - gunshotWorldPosition).normalized;
 
-        // Perform raycast in world space
         if (Physics.Raycast(gunshotWorldPosition, directionToTarget, out hit, raycastDistance))
         {
             Debug.Log("Hit: " + hit.transform.name);
-
             PlaySound();
             muzzleFlashPoint(gunshotWorldPosition);
             gunShotParticle(hit.point, hit.normal, hit.collider.gameObject);
@@ -73,5 +113,33 @@ public class playerWeaponPosition : MonoBehaviour
     {
         ParticleSystem _muzzleflash = Instantiate(muzzleFlash, weaponPoint, Quaternion.LookRotation(Vector3.back));
         Destroy(_muzzleflash.gameObject, _muzzleflash.main.duration + _muzzleflash.main.startLifetime.constantMax);
+    }
+
+    void Reload()
+    {
+        if (magazines.Count > 1)
+        {
+            magazines[currentMagazineIndex] = currentAmmo;
+            currentMagazineIndex = (currentMagazineIndex + 1) % magazines.Count;
+            currentAmmo = magazines[currentMagazineIndex];
+            UpdateAmmoDisplay();
+        }
+    }
+
+    void CycleMagazines()
+    {
+        if (magazines.Count > 1)
+        {
+            magazines[currentMagazineIndex] = currentAmmo;
+            currentMagazineIndex = (currentMagazineIndex + 1) % magazines.Count;
+            currentAmmo = magazines[currentMagazineIndex];
+            UpdateAmmoDisplay();
+        }
+    }
+
+    void UpdateAmmoDisplay()
+    {
+        ammoDisplay.SetText($"Ammo: {currentAmmo}/{magazineCapacity}");
+        magazineDisplay.SetText($"Magazine: {currentMagazineIndex + 1}/{magazines.Count}");
     }
 }
