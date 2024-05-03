@@ -9,6 +9,7 @@ public class enemyHealth : MonoBehaviour
     public void OnHitByPlayer()
     {
         health--;
+        this.gameObject.GetComponent<NPC_behavior_StateMachine>().ReactToHit();
         if (health <= 0)
         {
             isEnemyDead = true;
