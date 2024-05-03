@@ -29,7 +29,6 @@ public class enemyWeapon:MonoBehaviour
 
     private void Start()
     {
-      
         foreach (Transform child in transform)
         {
             Debug.Log(child);

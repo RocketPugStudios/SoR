@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class enemy_animation_stateMachine : MonoBehaviour
 {
@@ -38,12 +39,19 @@ public class enemy_animation_stateMachine : MonoBehaviour
 
         if (behaviorStateMachine.currentState == NPC_behavior_StateMachine.NPCState.Combat)
         {
-            animator.SetBool("playerisSpotted" , true);
+            if (!this.behaviorStateMachine.isInRangeOfPlayer && this.behaviorStateMachine.isGettingInRange)
+            {
+                animator.SetBool("isChasingPlayer" , true);
+                this.GetComponent<NavMeshAgent>().speed = 4.5f;
+            }
+            if (this.behaviorStateMachine.isInRangeOfPlayer && !this.behaviorStateMachine.isGettingInRange)
+            {
+                animator.SetBool("playerisSpotted", true);
+                animator.SetBool("isChasingPlayer", false);
+            }
+          // else
+        
         }
-
-
     }
-
-
 }
 

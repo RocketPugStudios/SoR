@@ -38,7 +38,9 @@ public class NPC_behavior_StateMachine : MonoBehaviour
     [SerializeField] public bool threatSpotted;
     [Header("Distance Settings")]
     [SerializeField] public bool isInRangeOfPlayer;
+    [SerializeField] public bool isGettingInRange;
     [SerializeField] public float DistanceBetweenPlayerAndGameObject;
+
     private Transform getPlayerPosition;
     private bool isNavigatingTowardsPlayer = false;
     private Vector3 targetPosition;
@@ -168,10 +170,13 @@ public class NPC_behavior_StateMachine : MonoBehaviour
         if (DistanceBetweenPlayerAndGameObject >= 6.5f)
         {
             isInRangeOfPlayer = false;
+            isGettingInRange = true;
+
             agent.SetDestination(Player.transform.position);
         }
         if (DistanceBetweenPlayerAndGameObject <= 6.5f)
         {
+            isGettingInRange = false;
             StopAgent();
             isInRangeOfPlayer = true;
         }
