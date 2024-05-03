@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Net.NetworkInformation;
 using System.Threading;
-
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UIElements;
@@ -23,6 +23,8 @@ public class NPC_behavior_StateMachine : MonoBehaviour
     [Header("Relationships")]
     [SerializeField] public NPC_Behavior_Sight sightBehavior;
     [SerializeField] public enemyWeapon weaponScript;
+    [SerializeField] public GameObject Player;
+    public GameObject wayPoint;
 
     [Header("Patrol Behavior Settings")]
     public NPCState currentState = NPCState.Idle;
@@ -37,6 +39,12 @@ public class NPC_behavior_StateMachine : MonoBehaviour
     [SerializeField] public int setTimer;
     [SerializeField] public bool threatSpotted;
 
+    [Header("Distance Settings")]
+    [SerializeField] public bool isInRangeOfPlayer;
+    [SerializeField] public float DistanceBetweenPlayerAndGameObject;
+  
+
+
     private Transform getPlayerPosition;
     private bool isNavigatingTowardsPlayer = false;
     private Vector3 targetPosition;
@@ -47,6 +55,7 @@ public class NPC_behavior_StateMachine : MonoBehaviour
     private void Awake()
     {
         sightBehavior = GetComponent<NPC_Behavior_Sight>();
+        SpawnStartingPatrolPoint();
         PlanRoute();
         agent = GetComponent<NavMeshAgent>();
 
@@ -58,14 +67,11 @@ public class NPC_behavior_StateMachine : MonoBehaviour
     }
     void Update()
     {
-        
+        DistanceToPlayer();
         seenAnomaly();
-        if (patrolNodeIndex == numofPatrolNodes)
-        {
-            PatrolNodes.Reverse();
-            patrolNodeIndex = 0;
-        }
+        CircleBackToStartPatrolNode();
         setTargetPosition();
+
           /*---------------------------*   States   *-----------------------------------------------------------------*/
         switch (currentState)
         {
@@ -144,27 +150,68 @@ public class NPC_behavior_StateMachine : MonoBehaviour
             currentState = NPCState.Combat;
         }
     }
-
     void CombatState()
-    {
-
+    {     
         bool _canseeplayer = sightBehavior.canSeePlayer;
-
-
         Vector3 direction = sightBehavior.playerReference.transform.position - transform.position;
-        Quaternion rotation = Quaternion.LookRotation(direction);
-        //transform.rotation = rotation;
+        Quaternion rotation = Quaternion.LookRotation(direction); 
         transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * 10);
-        // Debug.Log("shooting player");
-        if (_canseeplayer)
+
+        GetInRange();
+
+        if (_canseeplayer && isInRangeOfPlayer)
         {
             if (coroutine == null) { coroutine = StartCoroutine(shootPlayer());}
         }
     }
+    /*------------------------------------------------------------*   Methods  *---------------------------------------------------------------*/
+    public void ReactToHit(){this.gameObject.transform.forward = Player.transform.position;}
+    private void GetInRange()
+    {
+        if (DistanceBetweenPlayerAndGameObject >= 6.5f)
+        {
+            isInRangeOfPlayer = false;
+            agent.SetDestination(Player.transform.position);
+        }
+        if (DistanceBetweenPlayerAndGameObject <= 6.5f)
+        {
+            StopAgent();
+            isInRangeOfPlayer = true;
+        }
+    }
+    private void CircleBackToStartPatrolNode()
+    {
+        if (patrolNodeIndex == numofPatrolNodes)
+        {
+            PatrolNodes.Reverse();
+            patrolNodeIndex = 0;
+        }
+    }
+    private void DistanceToPlayer()
+    {
+        float distance = Vector3.Distance(Player.transform.position, agent.transform.position);
 
+        DistanceBetweenPlayerAndGameObject = distance;
+        
+    }
+    private void SpawnStartingPatrolPoint()
+    {
+        Transform patrolNodes = transform.Find("Patrol Nodes");
 
+        if (patrolNodes == null)
+        {
+            Debug.LogError("Patrol Nodes not found!");
+            return;
+        }
 
-    /*------------------------------------------------------------*   Functions   *---------------------------------------------------------------*/
+        // Instantiate the nodePrefab as a child of patrolNodes
+        GameObject newNode = Instantiate(wayPoint, patrolNodes);
+        String tag = "PatrolNode";
+        // Optionally set the local position of the new node
+        newNode.tag = tag; // set tag for gameobject
+        newNode.transform.localPosition = Vector3.zero; // Position at the center of the parent
+        newNode.transform.SetAsFirstSibling();
+    }
 
     public Vector3 TargetPosition
     {
@@ -202,8 +249,7 @@ public class NPC_behavior_StateMachine : MonoBehaviour
         if (enemyNavQueue.Count == 0)//if queue is empty
         {
             enemyNavQueue.Enqueue(PatrolNodes[patrolNodeIndex]);//add location from list at index x into queue, 
-            Debug.Log(enemyNavQueue.Count);
-            /* if the index is equal to the patrol nodes list reverse the patrol nodes list then reset the index count*/   
+            
         }
     }
 
@@ -285,9 +331,7 @@ public class NPC_behavior_StateMachine : MonoBehaviour
         {
             getPlayerPosition = newPlayerPosition;
         }
-    }
-
-    
+    } 
     /*-----------------------------------------*  Subscriptions  *--------------------------------------------------*/
 
    
