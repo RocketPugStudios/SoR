@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class playerHealthSystem : MonoBehaviour
 {
     [SerializeField] int health = 3;
     [SerializeField] Animator animations;
     [SerializeField] bool isPlayerDead =false;
+    [SerializeField] Coroutine coroutine;
+    [SerializeField] public float deathTimer;
 
 
 
@@ -24,9 +27,19 @@ public class playerHealthSystem : MonoBehaviour
     {
         if (health <= 0)
         {
+
             animations.SetBool("isDead" ,true);
-            bool isPlayerDead = true;
+            isPlayerDead = true;
+            if (coroutine == null) { coroutine = StartCoroutine(Restart());}
         }
         
+    }
+    IEnumerator Restart()
+    {
+        yield return new WaitForSeconds(deathTimer);
+        if (isPlayerDead) 
+        {
+            SceneManager.LoadScene("Demo_Level_0");
+        }
     }
 }

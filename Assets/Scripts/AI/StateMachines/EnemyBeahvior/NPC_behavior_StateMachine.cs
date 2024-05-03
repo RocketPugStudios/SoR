@@ -4,10 +4,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Net.NetworkInformation;
 using System.Threading;
-using UnityEditor.UIElements;
+//using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.UIElements;
+//using UnityEngine.UIElements;
 
 public class NPC_behavior_StateMachine : MonoBehaviour
 {
@@ -18,7 +18,6 @@ public class NPC_behavior_StateMachine : MonoBehaviour
         Investigate,
         Combat,      
     }
-
     /*-------------------------------------------*   VALUES   *--------------------------------*/
     [Header("Relationships")]
     [SerializeField] public NPC_Behavior_Sight sightBehavior;
@@ -40,9 +39,6 @@ public class NPC_behavior_StateMachine : MonoBehaviour
     [Header("Distance Settings")]
     [SerializeField] public bool isInRangeOfPlayer;
     [SerializeField] public float DistanceBetweenPlayerAndGameObject;
-  
-
-
     private Transform getPlayerPosition;
     private bool isNavigatingTowardsPlayer = false;
     private Vector3 targetPosition;
@@ -65,8 +61,7 @@ public class NPC_behavior_StateMachine : MonoBehaviour
         seenAnomaly();
         CircleBackToStartPatrolNode();
         setTargetPosition();
-
-          /*---------------------------*   States   *-----------------------------------------------------------------*/
+ /*---------------------------*   States   *---------------------------------------------------------------*/
         switch (currentState)
         {
             case NPCState.Idle:
@@ -83,7 +78,7 @@ public class NPC_behavior_StateMachine : MonoBehaviour
                 break;
         }
     }
-     /* -------------------------------------*   State Behaviors   *--------------------------------------------*/
+ /* -------------------------------------*   State Behaviors   *--------------------------------------------*/
     void IdleState()
     {
        //Actions.stopWalking();
@@ -155,11 +150,19 @@ public class NPC_behavior_StateMachine : MonoBehaviour
 
         if (_canseeplayer && isInRangeOfPlayer)
         {
-            if (coroutine == null) { coroutine = StartCoroutine(shootPlayer());}
+            if (coroutine == null) {coroutine = StartCoroutine(shootPlayer());}
         }
     }
-    /*------------------------------------------------------------*   Methods  *---------------------------------------------------------------*/
-    public void ReactToHit(){gameObject.transform.LookAt(Player.transform.position);}
+ /*----------------------------------------*   Methods  *----------------------------------------------------*/
+    public void ReactToHit()
+    {
+        if (currentState != NPCState.Combat) 
+        {
+            gameObject.transform.LookAt(Player.transform.position);
+            currentState = NPCState.Investigate;
+        }
+
+    }
     private void GetInRange()
     {
         if (DistanceBetweenPlayerAndGameObject >= 6.5f)
@@ -327,11 +330,4 @@ public class NPC_behavior_StateMachine : MonoBehaviour
         }
     } 
     /*-----------------------------------------*  Subscriptions  *--------------------------------------------------*/
-
-   
-
-
-
-
-
 }

@@ -60,6 +60,7 @@ public class enemyWeapon:MonoBehaviour
             muzzleFlashPoint(weaponRaycast.position);
             gunShotParticle(hit.point, hit.normal, hit.collider.gameObject);
             Debug.DrawLine(weaponRaycast.transform.position, hit.point, Color.red);
+
             if (hit.collider.CompareTag("Player"))
             {
                 GameObject player = hit.collider.gameObject;

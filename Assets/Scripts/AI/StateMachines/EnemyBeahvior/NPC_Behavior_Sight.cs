@@ -42,7 +42,7 @@ public class NPC_Behavior_Sight : MonoBehaviour
         //Check if there any colliders available
         if (rangeChecks.Length != 0)
         {
-          //  Debug.Log("First Check Complete");
+          //Debug.Log("First Check Complete");
             // Get the first target's transform
             Transform target = rangeChecks[0].transform;
 
@@ -68,8 +68,5 @@ public class NPC_Behavior_Sight : MonoBehaviour
         }
         else if (canSeePlayer)
             canSeePlayer = false; // No targets found, reset canSeePlayer flag
-    }
-   
-   
-    
+    }    
 }
