@@ -46,7 +46,7 @@ public class playerWeaponPosition : MonoBehaviour
     {
         if (Input.GetButtonDown("Fire1") && currentAmmo > 0)
         {
-            GunShot(Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height / 2, Camera.main.nearClipPlane)));
+           //GunShot(Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height / 2, Camera.main.nearClipPlane)));
             return;
         }
 
