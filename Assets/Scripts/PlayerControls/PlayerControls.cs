@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class PlayerControls : MonoBehaviour
 {
+    public GameObject grenade;
+    public float throwForce = 80f;
+    public float throwOffset = 1f;
+
     void Update()
     {
         // Weapon Swap with Mouse Scroll Wheel
@@ -60,7 +64,7 @@ public class PlayerControls : MonoBehaviour
         // Throw Grenade
         if (Input.GetKeyDown(KeyCode.G))
         {
-            Debug.Log("Grenade Thrown");
+            ThrowGrenade();
         }
 
         // Activate Ability
@@ -79,6 +83,24 @@ public class PlayerControls : MonoBehaviour
         {
             Debug.Log("Sprinting");
         }
+        
+    }
+    void ThrowGrenade()
+    {
+        Vector3 spawnPosition = transform.position + transform.forward * throwOffset;
 
+        // Instantiate the grenade at the calculated spawn position
+        Instantiate(grenade, spawnPosition, transform.rotation);
+
+        // Get the Rigidbody component of the grenade
+        Rigidbody rb = grenade.GetComponent<Rigidbody>();
+
+        // Apply force to the grenade in the forward direction of the player
+        if (rb != null)
+        {
+            rb.AddForce(transform.forward * throwForce, ForceMode.Impulse);
+        }
+
+        Debug.Log("Grenade Thrown");
     }
 }
