@@ -25,7 +25,6 @@ public class NPC_behavior_StateMachine : MonoBehaviour
     [SerializeField] public enemyWeapon weaponScript;
     [SerializeField] public GameObject Player;
     public GameObject wayPoint;
-
     [Header("Patrol Behavior Settings")]
     public NPCState currentState = NPCState.Idle;
     [SerializeField] public NavMeshAgent agent;
@@ -38,7 +37,6 @@ public class NPC_behavior_StateMachine : MonoBehaviour
     [SerializeField] public float counter;
     [SerializeField] public int setTimer;
     [SerializeField] public bool threatSpotted;
-
     [Header("Distance Settings")]
     [SerializeField] public bool isInRangeOfPlayer;
     [SerializeField] public float DistanceBetweenPlayerAndGameObject;
@@ -49,7 +47,6 @@ public class NPC_behavior_StateMachine : MonoBehaviour
     private bool isNavigatingTowardsPlayer = false;
     private Vector3 targetPosition;
     private float shotTimer = 0.5f;
-
     private Coroutine coroutine;
 
     private void Awake()
@@ -58,12 +55,9 @@ public class NPC_behavior_StateMachine : MonoBehaviour
         SpawnStartingPatrolPoint();
         PlanRoute();
         agent = GetComponent<NavMeshAgent>();
-
         PatrolNodes[0].transform.parent.SetParent(null);
         weaponScript = GetComponentInChildren<enemyWeapon>();
-
-        //PatrolNodes[0].transform.parent.gameObject.hideFlags = HideFlags.HideInHierarchy;
-        
+        //PatrolNodes[0].transform.parent.gameObject.hideFlags = HideFlags.HideInHierarchy;     
     }
     void Update()
     {
@@ -165,7 +159,7 @@ public class NPC_behavior_StateMachine : MonoBehaviour
         }
     }
     /*------------------------------------------------------------*   Methods  *---------------------------------------------------------------*/
-    public void ReactToHit(){this.gameObject.transform.forward = Player.transform.position;}
+    public void ReactToHit(){gameObject.transform.LookAt(Player.transform.position);}
     private void GetInRange()
     {
         if (DistanceBetweenPlayerAndGameObject >= 6.5f)

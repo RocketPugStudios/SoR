@@ -52,18 +52,16 @@ public class NPC_Behavior_Sight : MonoBehaviour
             // Check if the angle between forward direction and direction to target is within the FOV
             if (Vector3.Angle(transform.forward, directionToTarget) < angle / 2)
             {
-               // Debug.Log("Second Check Complete");
+                Debug.Log("Second Check Complete");
                 // Calculate the distance to the target
                 float distanceToTarget = Vector3.Distance(transform.position, target.position);
 
                 // Raycast to check for obstacles in the line of sight
                 if (!Physics.Raycast(transform.position, directionToTarget, distanceToTarget, Obstacle))
                 {
-                    canSeePlayer = true; // Player is within FOV and not obstructed by obstacles
-                   
+                    canSeePlayer = true; // Player is within FOV and not obstructed by obstacles                 
                 }
-                else
-                    canSeePlayer = false; // Player is obstructed by obstacles
+                else canSeePlayer = false; // Player is obstructed by obstacles
             }
             else
                 canSeePlayer = false; // Player is outside of FOV
