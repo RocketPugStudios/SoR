@@ -1,9 +1,5 @@
 fileFormatVersion: 2
-<<<<<<< Updated upstream:Assets/Prefabs/LastOneIPromise.fbx.meta
-guid: 2f247dd57b7b9dc4282c00ac78c112aa
-=======
-guid: c6fd32d3898c91d4e9e047cc2d12e6a8
->>>>>>> Stashed changes:Assets/Animations/Enemy/Swat@Run Forward.fbx.meta
+guid: 42feb5c61ae6aae45b01332add5baf0f
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
