@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.024548907, g: 0.034199987, b: 0.059866972, a: 1}
+  m_IndirectSpecularColor: {r: 0.024537172, g: 0.03417172, b: 0.05976332, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2130,6 +2130,11 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 681156790}
+    - target: {fileID: 2519251095761821346, guid: 1aed4c6f74e39204e80210174f6ee087,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2565848288065354508, guid: 1aed4c6f74e39204e80210174f6ee087,
         type: 3}
       propertyPath: m_Mesh
@@ -2140,6 +2145,11 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 532588770}
+    - target: {fileID: 2988217690397491876, guid: 1aed4c6f74e39204e80210174f6ee087,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3508855581803475287, guid: 1aed4c6f74e39204e80210174f6ee087,
         type: 3}
       propertyPath: m_Mesh
@@ -2155,6 +2165,11 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 333528312}
+    - target: {fileID: 5916150243316432024, guid: 1aed4c6f74e39204e80210174f6ee087,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6001123812810665177, guid: 1aed4c6f74e39204e80210174f6ee087,
         type: 3}
       propertyPath: m_Mesh
